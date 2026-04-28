@@ -1,0 +1,37 @@
+[tools]
+java = "temurin-21"
+gradle = "8.7"
+android-sdk = "latest"
+
+[tasks.setup]
+description = "Initialize Gradle wrapper and install Android SDK components"
+run = """
+gradle wrapper
+yes | sdkmanager --licenses
+sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+./gradlew --version
+"""
+
+[tasks.build]
+description = "Build the application"
+run = "./gradlew assembleDebug"
+
+[tasks.test]
+description = "Run JVM-based tests"
+run = "./gradlew testDebugUnitTest"
+
+[tasks.test-watch]
+description = "Run JVM-based tests in continuous mode"
+run = "./gradlew testDebugUnitTest -t"
+
+[tasks.screenshot-record]
+description = "Record new screenshots with Roborazzi"
+run = "./gradlew recordRoborazziDebug"
+
+[tasks.screenshot-compare]
+description = "Compare current UI against baselines and generate a report"
+run = "./gradlew compareRoborazziDebug"
+
+[tasks.screenshot-verify]
+description = "Verify screenshots and fail if they don't match"
+run = "./gradlew verifyRoborazziDebug"

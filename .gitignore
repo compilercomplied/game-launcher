@@ -1,0 +1,41 @@
+kls_database.db
+
+# Gradle and Build artifacts
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+*.klib
+/build/
+**/build/
+/.gradle/
+/captures/
+.externalNativeBuild
+.cxx/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Android Studio and IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+.navigation/
+.project
+.classpath
+
+# macOS
+.DS_Store
+
+# Kotlin
+**/kotlin/daemon/
+
+# Mise (local config, if used)
+.mise.local.toml
+
+# Roborazzi 
+# Golden screenshots are typically saved in `build/outputs/roborazzi` or `src/test/roborazzi`.
+# We want to ignore the intermediate test output, but since `/build/` is already ignored above,
+# if you later configure Roborazzi to save "golden" (reference) images to be committed, 
+# you should place them in a non-ignored directory like `app/src/test/snapshots/`.
