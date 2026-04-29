@@ -1,0 +1,10 @@
+appId: com.example.unnamedproject
+---
+- launchApp
+# Assert the screen loaded by looking for a generic title or UI element
+# (You might need to adjust this text based on your actual top bar or empty state text)
+- assertVisible: "Unnamed Project" 
+
+# Assert that no games are accidentally shown
+- assertNotVisible: "Elden Ring"
+- assertNotVisible: "Hades II"

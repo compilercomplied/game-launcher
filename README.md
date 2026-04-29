@@ -9,6 +9,8 @@ Game launcher (WIP)
 - **Repository Pattern:** Abstracted data sources (`GameRepository`) to allow seamless swapping between real Android system data and mocked test data.
 - **Adaptive UI:** Responsive layout supporting both Portrait (LazyColumn) and Landscape (LazyRow).
 
-## Key Design Decisions (ADRs)
-- **Hilt over Koin:** Chosen for strict compile-time safety and ecosystem alignment, prioritizing integrity over build-time savings.
-- **JVM-prefered Testing:** All visual validation runs on the JVM to eliminate emulator overhead and maximize velocity.
+## Setup Requirements
+### Prerequisites
+- **[Android CLI](https://developer.android.com/tools/agents/android-cli)**
+- **[Maestro (e2e tests)](https://docs.maestro.dev/get-started/quickstart)**
+- **[Mise](https://github.com/jdx/mise)**

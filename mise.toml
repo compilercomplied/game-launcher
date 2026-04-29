@@ -3,14 +3,9 @@ java = "temurin-21"
 gradle = "8.7"
 android-sdk = "latest"
 
-[tasks.setup]
-description = "Initialize Gradle wrapper and install Android SDK components"
-run = """
-gradle wrapper
-yes | sdkmanager --licenses
-sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
-./gradlew --version
-"""
+[tasks.project-setup]
+description = "Initialize SDKs, create Emulator (AVD), and install tools (Maestro)"
+run = "./scripts/setup-project.sh"
 
 [tasks.build]
 description = "Build the application"
@@ -35,3 +30,7 @@ run = "./gradlew compareRoborazziDebug"
 [tasks.screenshot-verify]
 description = "Verify screenshots and fail if they don't match"
 run = "./gradlew verifyRoborazziDebug"
+
+[tasks.test-e2e]
+description = "Run end-to-end tests using Maestro"
+run = "./scripts/run-e2e.sh"

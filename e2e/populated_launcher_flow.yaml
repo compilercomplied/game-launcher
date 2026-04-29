@@ -1,0 +1,13 @@
+appId: com.example.unnamedproject
+---
+- launchApp
+# Assert the screen loaded
+- assertVisible: "Unnamed Project" 
+
+# Assert the games from our mock/populated list are rendered
+# WIP - we have to install APKs first
+# - assertVisible: "Elden Ring"
+# - assertVisible: "Hades II"
+# - assertVisible: "Animal Crossing"
+# - assertVisible: "Doom Eternal"
+# - assertVisible: "Tetris Effect"
