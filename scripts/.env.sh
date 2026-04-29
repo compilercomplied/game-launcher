@@ -15,5 +15,9 @@ if [ -n "$SDK_PATH" ]; then
     export PATH="$PATH:$SDK_PATH/platform-tools"
 fi
 
+# Configuration
+export AVD_NAME="medium_phone"
+export FIXTURES_DIR="e2e/fixtures"
+
 # Add Maestro to PATH
 export PATH="$PATH:$HOME/.maestro/bin"
