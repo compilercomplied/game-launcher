@@ -10,13 +10,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.testTag
 import com.example.unnamedproject.models.Game
 
 @Composable
 fun GameItem(game: Game) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.width(IntrinsicSize.Min)
+        modifier = Modifier
+            .width(IntrinsicSize.Min)
+            .testTag("game_item")
     ) {
         Box(
             modifier = Modifier
