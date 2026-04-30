@@ -1,16 +1,15 @@
 appId: com.example.unnamedproject
 ---
 - launchApp
-# Assert the screen loaded
+
 - assertVisible: "Unnamed Project" 
 
-# Assert the games from our mock/populated list are rendered
 - assertVisible: "SuperTuxKart"
+- assertVisible: "Unciv"
 
-# Assert that only a single game is shown using the game_item test tag
 - assertVisible:
     id: "game_item"
     index: 0
-- assertNotVisible:
+- assertVisible:
     id: "game_item"
     index: 1

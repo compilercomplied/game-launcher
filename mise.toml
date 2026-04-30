@@ -34,21 +34,4 @@ run = "./scripts/run-e2e.sh"
 [tasks."test-manual"]
 description = "Launch emulator into a specific snapshot (default: clean_state) with the latest app installed"
 depends = ["build"]
-run = """
-source scripts/.env.sh
-source scripts/.logging.sh
-SNAPSHOT=${1:-clean_state}
-APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
-
-log_banner "Manual Test: $SNAPSHOT"
-android emulator start "$AVD_NAME"
-
-log_step "Loading snapshot..."
-adb emu avd snapshot load "$SNAPSHOT"
-sleep 2
-
-log_step "Installing latest APK..."
-adb install -r "$APK_PATH"
-
-log_success "Emulator ready at $SNAPSHOT with latest build"
-"""
+run = "./scripts/test-manual.sh"

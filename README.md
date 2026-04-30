@@ -1,6 +1,6 @@
-# Unnamed
+# Unnamed game launcher
 
-Game launcher (WIP)
+This project contains the source code of `unnamed game launcher`, an android app that can be used as a launcher and whose focus is to help the user easily manage their game library with good UX and nice styling.
 
 # Development
 
