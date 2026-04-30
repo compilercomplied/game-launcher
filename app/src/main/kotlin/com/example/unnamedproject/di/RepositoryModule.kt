@@ -3,6 +3,7 @@ package com.example.unnamedproject.di
 import android.content.Context
 import com.example.unnamedproject.contracts.host.GameRepository
 import com.example.unnamedproject.data.AndroidGameRepository
+import com.example.unnamedproject.data.local.GameMetadataDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,8 +18,9 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideGameRepository(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        metadataDao: GameMetadataDao
     ): GameRepository {
-        return AndroidGameRepository(context)
+        return AndroidGameRepository(context, metadataDao)
     }
 }

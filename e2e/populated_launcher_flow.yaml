@@ -10,6 +10,16 @@ appId: com.example.unnamedproject
 - assertVisible:
     id: "game_item"
     index: 0
+- extendedWaitUntil:
+    visible:
+        id: "game_cover_downloaded"
+        index: 0
+    timeout: 15000
 - assertVisible:
     id: "game_item"
     index: 1
+- extendedWaitUntil:
+    visible:
+        id: "game_cover_downloaded"
+        index: 1
+    timeout: 15000

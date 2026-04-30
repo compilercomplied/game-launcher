@@ -6,7 +6,7 @@ import com.example.unnamedproject.contracts.host.GameRepository
 import com.example.unnamedproject.models.Game
 
 class MockedGameRepository : GameRepository {
-    override fun getInstalledGames(): List<Game> = listOf(
+    override suspend fun getInstalledGames(): List<Game> = listOf(
         Game("Elden Ring", "com.software.elden", Icons.Default.PlayArrow),
         Game("Hades II", "com.supergiant.hades2", Icons.Default.PlayArrow),
         Game("Animal Crossing", "com.nintendo.ac", Icons.Default.PlayArrow),

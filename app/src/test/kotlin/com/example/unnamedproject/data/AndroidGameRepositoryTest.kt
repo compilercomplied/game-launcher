@@ -8,6 +8,9 @@ import android.content.pm.ResolveInfo
 import android.content.pm.ActivityInfo
 import android.os.Build
 import androidx.test.core.app.ApplicationProvider
+import com.example.unnamedproject.data.local.GameMetadataDao
+import com.example.unnamedproject.data.local.GameMetadataEntity
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -25,16 +28,23 @@ class AndroidGameRepositoryTest {
     private lateinit var context: Context
     private lateinit var packageManager: ShadowPackageManager
     private lateinit var repository: AndroidGameRepository
+    private lateinit var fakeDao: GameMetadataDao
 
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
         packageManager = Shadows.shadowOf(context.packageManager)
-        repository = AndroidGameRepository(context)
+        fakeDao = object : GameMetadataDao {
+            override suspend fun getAllMetadata(): List<GameMetadataEntity> = emptyList()
+            override suspend fun getMetadataForPackage(packageName: String): GameMetadataEntity? = null
+            override suspend fun insertMetadata(metadata: GameMetadataEntity) {}
+            override suspend fun deleteMetadataForPackage(packageName: String) {}
+        }
+        repository = AndroidGameRepository(context, fakeDao)
     }
 
     @Test
-    fun `getInstalledGames should return only apps categorized as games`() {
+    fun `getInstalledGames should return only apps categorized as games`() = runBlocking {
         // Arrange
         val modernGame = createResolveInfo("com.example.modern.game", "Modern Game").apply {
             activityInfo.applicationInfo.category = ApplicationInfo.CATEGORY_GAME

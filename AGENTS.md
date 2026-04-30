@@ -6,6 +6,11 @@ This project uses **Mise** to orchestrate the entire development and testing lif
 
 The source of truth for all operational tasks is the `mise.toml` file. Load this into your context to better understand the expected development flow.
 
+### Core Testing Standards
+All new features or significant changes MUST include:
+1.  **End-to-End (E2E) Tests:** Use Maestro flows (under `e2e/`) to cover the basic happy paths and core user flows.
+2.  **Unit Tests with Screenshots:** Use Robolectric and Roborazzi (under `app/src/test/`) to cover complex UI states, edge cases (e.g., error states, empty states), and different configurations (landscape vs. portrait).
+
 Always add new tests or adapt the existing tests to the new changes.
 
 ## Key Principles for Agents

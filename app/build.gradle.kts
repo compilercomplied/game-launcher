@@ -92,6 +92,20 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.51.1")
     ksp("com.google.dagger:hilt-android-compiler:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation("androidx.hilt:hilt-work:1.2.0")
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
+
+    // Room
+    val roomVersion = "2.6.1"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
+
+    // WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+
+    // Jsoup
+    implementation("org.jsoup:jsoup:1.17.2")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
@@ -100,6 +114,7 @@ dependencies {
     testImplementation("io.github.takahirom.roborazzi:roborazzi:1.12.0")
     testImplementation("io.github.takahirom.roborazzi:roborazzi-compose:1.12.0")
     testImplementation("io.github.takahirom.roborazzi:roborazzi-junit-rule:1.12.0")
+    testImplementation("io.mockk:mockk:1.13.10")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")

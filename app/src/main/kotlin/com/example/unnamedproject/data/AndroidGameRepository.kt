@@ -7,22 +7,32 @@ import android.content.pm.ResolveInfo
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import com.example.unnamedproject.contracts.host.GameRepository
+import com.example.unnamedproject.data.local.GameMetadataDao
 import com.example.unnamedproject.models.Game
 
-class AndroidGameRepository(private val context: Context) : GameRepository {
-    override fun getInstalledGames(): List<Game> {
+class AndroidGameRepository(
+    private val context: Context,
+    private val metadataDao: GameMetadataDao
+) : GameRepository {
+    override suspend fun getInstalledGames(): List<Game> {
         val pm = context.packageManager
         val mainIntent = Intent(Intent.ACTION_MAIN, null).apply {
             addCategory(Intent.CATEGORY_LAUNCHER)
         }
         
+        val metadataMap = metadataDao.getAllMetadata().associateBy { it.packageName }
+        
         return pm.queryIntentActivities(mainIntent, 0)
             .filter(::shouldIncludeApp)
             .map { resolveInfo ->
+                val packageName = resolveInfo.activityInfo.packageName
+                val metadata = metadataMap[packageName]
                 Game(
                     name = resolveInfo.loadLabel(pm).toString(),
-                    packageName = resolveInfo.activityInfo.packageName,
-                    icon = Icons.Default.PlayArrow
+                    packageName = packageName,
+                    icon = Icons.Default.PlayArrow,
+                    coverPath = metadata?.coverPath,
+                    bannerPath = metadata?.bannerPath
                 )
             }
             .sortedBy { it.name }
