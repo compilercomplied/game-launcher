@@ -19,8 +19,18 @@ import androidx.compose.ui.platform.testTag
 import com.example.unnamedproject.models.Game
 import java.io.File
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.border
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+
 @Composable
-fun GameItem(game: Game) {
+fun GameItem(
+    game: Game,
+    isSelected: Boolean = false,
+    modifier: Modifier = Modifier
+) {
     val coverBitmap = remember(game.coverPath) {
         game.coverPath?.let { path ->
             val file = File(path)
@@ -30,16 +40,32 @@ fun GameItem(game: Game) {
         }
     }
 
+    val scale by animateFloatAsState(
+        targetValue = if (isSelected) 1.1f else 1.0f,
+        label = "selection_scale"
+    )
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = modifier
             .width(IntrinsicSize.Min)
+            .scale(scale)
             .testTag("game_item")
     ) {
+        val shape = MaterialTheme.shapes.extraLarge
         Box(
             modifier = Modifier
                 .size(100.dp)
-                .background(MaterialTheme.colorScheme.primaryContainer, shape = MaterialTheme.shapes.extraLarge),
+                .then(
+                    if (isSelected) {
+                        Modifier.border(
+                            width = 4.dp,
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = shape
+                        )
+                    } else Modifier
+                )
+                .background(MaterialTheme.colorScheme.primaryContainer, shape = shape),
             contentAlignment = Alignment.Center
         ) {
             if (coverBitmap != null) {

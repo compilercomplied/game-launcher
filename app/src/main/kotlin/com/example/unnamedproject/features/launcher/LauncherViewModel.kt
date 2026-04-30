@@ -14,14 +14,21 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import kotlinx.coroutines.flow.update
+
+data class LauncherUiState(
+    val games: List<Game> = emptyList(),
+    val selectedIndex: Int = 0
+)
+
 @HiltViewModel
 class LauncherViewModel @Inject constructor(
     private val repository: GameRepository,
     private val workManager: WorkManager
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<List<Game>>(emptyList())
-    val uiState: StateFlow<List<Game>> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(LauncherUiState())
+    val uiState: StateFlow<LauncherUiState> = _uiState.asStateFlow()
 
     init {
         loadGames()
@@ -30,8 +37,13 @@ class LauncherViewModel @Inject constructor(
 
     fun loadGames() {
         viewModelScope.launch {
-            _uiState.value = repository.getInstalledGames()
+            val games = repository.getInstalledGames()
+            _uiState.update { it.copy(games = games) }
         }
+    }
+
+    fun onGameSelected(index: Int) {
+        _uiState.update { it.copy(selectedIndex = index) }
     }
 
     private fun triggerMetadataSync() {

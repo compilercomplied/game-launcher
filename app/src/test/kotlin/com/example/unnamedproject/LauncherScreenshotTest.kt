@@ -42,7 +42,11 @@ class LauncherScreenshotTest {
     @Config(qualifiers = "w360dp-h640dp-port")
     fun captureLauncherPortrait() {
         composeTestRule.setContent {
-            LauncherContent(games = games)
+            LauncherContent(
+                games = games,
+                selectedIndex = 0,
+                onGameSelected = {}
+            )
         }
         composeTestRule.onRoot().captureRoboImage()
     }
@@ -51,7 +55,11 @@ class LauncherScreenshotTest {
     @Config(qualifiers = "w640dp-h360dp-land")
     fun captureLauncherLandscape() {
         composeTestRule.setContent {
-            LauncherContent(games = games)
+            LauncherContent(
+                games = games,
+                selectedIndex = 0,
+                onGameSelected = {}
+            )
         }
         composeTestRule.onRoot().captureRoboImage()
     }

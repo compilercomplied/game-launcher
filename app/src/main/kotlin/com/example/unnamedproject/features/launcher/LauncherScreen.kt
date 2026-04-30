@@ -18,17 +18,53 @@ import com.example.unnamedproject.R
 import com.example.unnamedproject.features.launcher.components.GameItem
 import com.example.unnamedproject.models.Game
 
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.foundation.ExperimentalFoundationApi
+import kotlin.math.abs
+
 @Composable
 fun LauncherScreen(viewModel: LauncherViewModel) {
-    val games by viewModel.uiState.collectAsState()
-    LauncherContent(games = games)
+    val uiState by viewModel.uiState.collectAsState()
+    LauncherContent(
+        games = uiState.games,
+        selectedIndex = uiState.selectedIndex,
+        onGameSelected = { viewModel.onGameSelected(it) }
+    )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun LauncherContent(games: List<Game>) {
+fun LauncherContent(
+    games: List<Game>,
+    selectedIndex: Int,
+    onGameSelected: (Int) -> Unit
+) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val listState = rememberLazyListState()
+
+    // Calculate which item is closest to the center
+    val centerIndex by remember {
+        derivedStateOf {
+            val layoutInfo = listState.layoutInfo
+            val visibleItems = layoutInfo.visibleItemsInfo
+            if (visibleItems.isEmpty()) 0
+            else {
+                val center = (layoutInfo.viewportStartOffset + layoutInfo.viewportEndOffset) / 2
+                visibleItems.minByOrNull { abs((it.offset + it.size / 2) - center) }?.index ?: 0
+            }
+        }
+    }
+
+    LaunchedEffect(centerIndex) {
+        onGameSelected(centerIndex)
+    }
 
     Scaffold(
         topBar = {
@@ -47,26 +83,44 @@ fun LauncherContent(games: List<Game>) {
                 .padding(paddingValues),
             color = MaterialTheme.colorScheme.background
         ) {
-            if (isLandscape) {
-                LazyRow(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(32.dp),
-                    horizontalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterHorizontally),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    items(games) { game ->
-                        GameItem(game = game)
+            BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                val snapFlingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
+
+                if (isLandscape) {
+                    val itemWidth = 100.dp
+                    val horizontalPadding = maxWidth / 2 - itemWidth / 2
+                    LazyRow(
+                        state = listState,
+                        flingBehavior = snapFlingBehavior,
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(horizontal = horizontalPadding),
+                        horizontalArrangement = Arrangement.spacedBy(32.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        items(games.size) { index ->
+                            GameItem(
+                                game = games[index],
+                                isSelected = index == selectedIndex
+                            )
+                        }
                     }
-                }
-            } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(32.dp),
-                    verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterVertically),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    items(games) { game ->
-                        GameItem(game = game)
+                } else {
+                    val itemHeight = 150.dp
+                    val verticalPadding = maxHeight / 2 - itemHeight / 2
+                    LazyColumn(
+                        state = listState,
+                        flingBehavior = snapFlingBehavior,
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(vertical = verticalPadding),
+                        verticalArrangement = Arrangement.spacedBy(32.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        items(games.size) { index ->
+                            GameItem(
+                                game = games[index],
+                                isSelected = index == selectedIndex
+                            )
+                        }
                     }
                 }
             }

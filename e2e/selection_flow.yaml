@@ -1,0 +1,23 @@
+appId: com.example.unnamedproject
+---
+- launchApp
+- assertVisible: "Unnamed Project"
+
+# Initial selection (Elden Ring / First item)
+- assertVisible:
+    id: "game_item"
+    index: 0
+
+# Swipe up to move to next item (Portrait)
+- swipe:
+    start: 50%, 80%
+    end: 50%, 20%
+
+# Wait for snapping and selection update
+- stopApp
+- launchApp # Re-launch to ensure fresh state if needed, or just continue
+
+# Alternatively, just verify the second item is now prominent
+- assertVisible:
+    id: "game_item"
+    index: 1

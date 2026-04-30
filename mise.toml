@@ -32,6 +32,6 @@ description = "Run end-to-end tests using Maestro"
 run = "./scripts/run-e2e.sh"
 
 [tasks."test-manual"]
-description = "Launch emulator into a specific snapshot (default: clean_state) with the latest app installed"
+description = "Launch emulator into a specific snapshot (default: populated_state) with the latest app installed"
 depends = ["build"]
 run = "./scripts/test-manual.sh"

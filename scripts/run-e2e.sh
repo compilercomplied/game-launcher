@@ -31,25 +31,28 @@ log_step "Starting Emulator ($AVD_NAME)..."
 android emulator start "$AVD_NAME"
 log_success "Emulator ready."
 
-# 3. Test Cycle: Empty State
-log_step "Preparing 'Empty State' environment..."
-adb emu avd snapshot load clean_state
-sleep 2 # Stabilization
-log_info "Installing Application..."
-adb install -r "$APK_PATH"
-log_step "Running E2E: Empty State..."
-maestro test e2e/empty_launcher_flow.yaml
-log_success "Empty state tests passed."
+# 3. Running E2E Flows
+for flow in e2e/*.yaml; do
+    [ -e "$flow" ] || continue
+    flow_name=$(basename "$flow")
+    
+    # Determine snapshot based on name
+    snapshot="populated_state"
+    if [[ "$flow_name" == *"empty"* ]]; then
+        snapshot="clean_state"
+    fi
 
-# 4. Test Cycle: Populated State
-log_step "Preparing 'Populated State' environment..."
-adb emu avd snapshot load populated_state
-sleep 2 # Stabilization
-log_info "Installing Application..."
-adb install -r "$APK_PATH"
-log_step "Running E2E: Populated State..."
-maestro test e2e/populated_launcher_flow.yaml
-log_success "Populated state tests passed."
+    log_step "Preparing '$snapshot' environment for $flow_name..."
+    adb emu avd snapshot load "$snapshot"
+    sleep 2 # Stabilization
+
+    log_info "Installing Application..."
+    adb install -r "$APK_PATH"
+
+    log_banner "Running E2E Flow: $flow_name"
+    maestro test "$flow"
+    log_success "Flow $flow_name passed."
+done
 
 log_success "All E2E Tests Completed Successfully!"
 log_banner

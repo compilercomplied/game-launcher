@@ -4,7 +4,7 @@ set -e
 source "$(dirname "$0")/.logging.sh"
 source "$(dirname "$0")/.env.sh"
 
-SNAPSHOT="${1:-clean_state}"
+SNAPSHOT="${1:-populated_state}"
 APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
 
 log_banner "Manual Test Session: $SNAPSHOT"

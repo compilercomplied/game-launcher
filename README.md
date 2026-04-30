@@ -2,6 +2,10 @@
 
 This project contains the source code of `unnamed game launcher`, an android app that can be used as a launcher and whose focus is to help the user easily manage their game library with good UX and nice styling.
 
+Main features:
+ - See a list of games installed, with both landscape and portrait orientations.
+ - Themable; uses Material Expressive 3 as the default skin.
+
 # Development
 
 ## Prerequisites
