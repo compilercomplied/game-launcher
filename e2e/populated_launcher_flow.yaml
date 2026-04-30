@@ -5,4 +5,12 @@ appId: com.example.unnamedproject
 - assertVisible: "Unnamed Project" 
 
 # Assert the games from our mock/populated list are rendered
-- assertVisible: "2048 Open Fun Game"
+- assertVisible: "SuperTuxKart"
+
+# Assert that only a single game is shown using the game_item test tag
+- assertVisible:
+    id: "game_item"
+    index: 0
+- assertNotVisible:
+    id: "game_item"
+    index: 1

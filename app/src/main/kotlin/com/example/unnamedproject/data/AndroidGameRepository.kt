@@ -33,16 +33,13 @@ class AndroidGameRepository(private val context: Context) : GameRepository {
         val packageName = appInfo.packageName
         
         // Exclude ourselves
-        val isNotSelf = packageName != context.packageName
+        if (packageName == context.packageName) return false
         
-        // On many Android versions, side-loaded games aren't automatically 
-        // categorized as ApplicationInfo.CATEGORY_GAME. 
-        // For a launcher, we generally want to show all launchable apps 
-        // that aren't system/pre-installed apps (unless we want to be a full launcher).
-        
-        val isSystemApp = (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
-        val isUpdatedSystemApp = (appInfo.flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0
+        // Check if the app is categorized as a game
+        val isLegacyGame = (appInfo.flags and ApplicationInfo.FLAG_IS_GAME) != 0
+        val isModernGame = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O && 
+                          appInfo.category == ApplicationInfo.CATEGORY_GAME
 
-        return isNotSelf && (!isSystemApp || isUpdatedSystemApp)
+        return isLegacyGame || isModernGame
     }
 }
