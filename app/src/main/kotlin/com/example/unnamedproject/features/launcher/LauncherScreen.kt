@@ -1,31 +1,37 @@
 package com.example.unnamedproject.features.launcher
 
 import android.content.res.Configuration
+import android.graphics.BitmapFactory
+import android.os.Build
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.unnamedproject.R
 import com.example.unnamedproject.features.launcher.components.GameItem
 import com.example.unnamedproject.models.Game
-
-import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
-import androidx.compose.foundation.ExperimentalFoundationApi
+import java.io.File
 import kotlin.math.abs
 
 @Composable
@@ -36,6 +42,72 @@ fun LauncherScreen(viewModel: LauncherViewModel) {
         selectedIndex = uiState.selectedIndex,
         onGameSelected = { viewModel.onGameSelected(it) }
     )
+}
+
+@Composable
+fun DynamicGameBackground(selectedGame: Game?, modifier: Modifier = Modifier) {
+    Crossfade(
+        targetState = selectedGame,
+        animationSpec = tween(700),
+        label = "background_crossfade"
+    ) { game ->
+        val bitmap = remember(game?.bannerPath ?: game?.coverPath) {
+            val path = game?.bannerPath ?: game?.coverPath
+            path?.let {
+                val file = File(it)
+                if (file.exists()) {
+                    BitmapFactory.decodeFile(it)?.asImageBitmap()
+                } else null
+            }
+        }
+
+        Box(modifier = modifier.fillMaxSize()) {
+            if (bitmap != null) {
+                Image(
+                    bitmap = bitmap,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .testTag("launcher_background_image")
+                        .then(
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                Modifier.blur(30.dp)
+                            } else Modifier
+                        )
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(
+                                    MaterialTheme.colorScheme.surface,
+                                    MaterialTheme.colorScheme.primaryContainer
+                                )
+                            )
+                        )
+                        .testTag("launcher_background_fallback")
+                )
+            }
+
+            // Scrim for readability
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            0f to Color.Black.copy(alpha = 0.6f),
+                            0.3f to Color.Transparent,
+                            0.7f to Color.Transparent,
+                            1f to Color.Black.copy(alpha = 0.8f)
+                        )
+                    )
+                    .testTag("launcher_background_scrim")
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -66,24 +138,28 @@ fun LauncherContent(
         onGameSelected(centerIndex)
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(id = R.string.app_name)) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+    Box(modifier = Modifier.fillMaxSize()) {
+        DynamicGameBackground(
+            selectedGame = if (games.isNotEmpty() && selectedIndex in games.indices) games[selectedIndex] else null
+        )
+
+        Scaffold(
+            containerColor = Color.Transparent,
+            topBar = {
+                TopAppBar(
+                    title = { Text(stringResource(id = R.string.app_name)) },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent,
+                        titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    )
                 )
-            )
-        }
-    ) { paddingValues ->
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            }
+        ) { paddingValues ->
+            BoxWithConstraints(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
                 val snapFlingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
 
                 if (isLandscape) {

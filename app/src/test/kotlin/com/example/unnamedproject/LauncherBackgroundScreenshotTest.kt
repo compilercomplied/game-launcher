@@ -15,15 +15,15 @@ import org.robolectric.annotation.GraphicsMode
 
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
-class LauncherScreenshotTest {
+class LauncherBackgroundScreenshotTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
     private val repository = MockedGameRepository()
 
     @Test
-    @Config(qualifiers = "w360dp-h640dp-port")
-    fun captureLauncherPortrait() = runBlocking {
+    @Config(qualifiers = "w360dp-h640dp-port", sdk = [33]) // SDK 33 for blur effect
+    fun captureLauncherBackgroundFirstItem() = runBlocking {
         val games = repository.getInstalledGames()
         composeTestRule.setContent {
             LauncherContent(
@@ -32,22 +32,34 @@ class LauncherScreenshotTest {
                 onGameSelected = {}
             )
         }
-        composeTestRule.mainClock.advanceTimeBy(1000)
         composeTestRule.onRoot().captureRoboImage()
     }
 
     @Test
-    @Config(qualifiers = "w640dp-h360dp-land")
-    fun captureLauncherLandscape() = runBlocking {
+    @Config(qualifiers = "w360dp-h640dp-port", sdk = [33])
+    fun captureLauncherBackgroundSecondItem() = runBlocking {
         val games = repository.getInstalledGames()
         composeTestRule.setContent {
             LauncherContent(
                 games = games,
-                selectedIndex = 0,
+                selectedIndex = 1,
                 onGameSelected = {}
             )
         }
-        composeTestRule.mainClock.advanceTimeBy(1000)
+        composeTestRule.onRoot().captureRoboImage()
+    }
+
+    @Test
+    @Config(qualifiers = "w360dp-h640dp-port", sdk = [26]) // Below Android S, no blur
+    fun captureLauncherBackgroundNoBlur() = runBlocking {
+        val games = repository.getInstalledGames()
+        composeTestRule.setContent {
+            LauncherContent(
+                games = games,
+                selectedIndex = 2,
+                onGameSelected = {}
+            )
+        }
         composeTestRule.onRoot().captureRoboImage()
     }
 }

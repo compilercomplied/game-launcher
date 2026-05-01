@@ -1,11 +1,11 @@
 package com.example.unnamedproject
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import com.example.unnamedproject.features.launcher.LauncherContent
+import com.example.unnamedproject.mocks.MockedGameRepository
 import com.github.takahirom.roborazzi.captureRoboImage
+import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,15 +19,12 @@ class LauncherSelectionScreenshotTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private val games = listOf(
-        com.example.unnamedproject.models.Game("Elden Ring", "com.software.elden", Icons.Default.PlayArrow),
-        com.example.unnamedproject.models.Game("Hades II", "com.supergiant.hades2", Icons.Default.PlayArrow),
-        com.example.unnamedproject.models.Game("Celeste", "com.mattmakesgames.celeste", Icons.Default.PlayArrow)
-    )
+    private val repository = MockedGameRepository()
 
     @Test
     @Config(qualifiers = "w360dp-h640dp-port")
-    fun captureLauncherSelectionPortrait() {
+    fun captureLauncherSelectionPortrait() = runBlocking {
+        val games = repository.getInstalledGames()
         composeTestRule.setContent {
             LauncherContent(
                 games = games,
@@ -35,14 +32,15 @@ class LauncherSelectionScreenshotTest {
                 onGameSelected = {}
             )
         }
-        // Advance clock to ensure selection animations (scale) are complete
+        // Advance clock to ensure selection animations (scale) and background transitions are complete
         composeTestRule.mainClock.advanceTimeBy(1000)
         composeTestRule.onRoot().captureRoboImage()
     }
 
     @Test
     @Config(qualifiers = "w360dp-h640dp-port")
-    fun captureLauncherSecondItemSelected() {
+    fun captureLauncherSecondItemSelected() = runBlocking {
+        val games = repository.getInstalledGames()
         composeTestRule.setContent {
             LauncherContent(
                 games = games,
@@ -50,7 +48,7 @@ class LauncherSelectionScreenshotTest {
                 onGameSelected = {}
             )
         }
-        // Advance clock to ensure selection animations (scale) are complete
+        // Advance clock to ensure selection animations (scale) and background transitions are complete
         composeTestRule.mainClock.advanceTimeBy(1000)
         composeTestRule.onRoot().captureRoboImage()
     }

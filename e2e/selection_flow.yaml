@@ -7,17 +7,15 @@ appId: com.example.unnamedproject
 - assertVisible:
     id: "game_item"
     index: 0
+- assertVisible: "launcher_background_image"
 
 # Swipe up to move to next item (Portrait)
 - swipe:
     start: 50%, 80%
     end: 50%, 20%
 
-# Wait for snapping and selection update
-- stopApp
-- launchApp # Re-launch to ensure fresh state if needed, or just continue
-
-# Alternatively, just verify the second item is now prominent
+# Verify the second item is now prominent and background still visible
 - assertVisible:
     id: "game_item"
     index: 1
+- assertVisible: "launcher_background_image"
