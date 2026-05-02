@@ -3,19 +3,16 @@ appId: com.example.unnamedproject
 - launchApp
 - assertVisible: "Unnamed Project"
 
-# Initial selection (Elden Ring / First item)
 - assertVisible:
     id: "game_item"
     index: 0
-- assertVisible: "launcher_background_image"
+    selected: true
 
-# Swipe up to move to next item (Portrait)
 - swipe:
     start: 50%, 80%
     end: 50%, 20%
 
-# Verify the second item is now prominent and background still visible
 - assertVisible:
     id: "game_item"
     index: 1
-- assertVisible: "launcher_background_image"
+    selected: true

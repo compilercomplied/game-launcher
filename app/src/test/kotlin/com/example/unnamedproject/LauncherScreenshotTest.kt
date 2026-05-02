@@ -1,7 +1,9 @@
 package com.example.unnamedproject
 
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performClick
 import com.example.unnamedproject.features.launcher.LauncherContent
 import com.example.unnamedproject.mocks.MockedGameRepository
 import com.github.takahirom.roborazzi.captureRoboImage
@@ -48,6 +50,25 @@ class LauncherScreenshotTest {
             )
         }
         composeTestRule.mainClock.advanceTimeBy(1000)
+        composeTestRule.onRoot().captureRoboImage()
+    }
+
+    @Test
+    @Config(qualifiers = "w360dp-h640dp-port")
+    fun captureLauncherWithDrawerOpen() = runBlocking {
+        val games = repository.getInstalledGames()
+        composeTestRule.setContent {
+            LauncherContent(
+                games = games,
+                selectedIndex = 0,
+                onGameSelected = {}
+            )
+        }
+        
+        // Open the drawer
+        composeTestRule.onNodeWithContentDescription("Open navigation menu").performClick()
+        composeTestRule.mainClock.advanceTimeBy(1000)
+        
         composeTestRule.onRoot().captureRoboImage()
     }
 }

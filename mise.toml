@@ -3,6 +3,13 @@ java = "temurin-21"
 gradle = "8.7"
 android-sdk = "latest"
 
+[env]
+ANDROID_HOME = "/Users/gdario/.local/share/mise/installs/android-sdk/1.0"
+_.path = [
+  "/Users/gdario/.local/share/mise/installs/android-sdk/1.0/platform-tools",
+  "{{env.HOME}}/.maestro/bin"
+]
+
 [tasks.project-setup]
 description = "Initialize SDKs, create Emulator (AVD), and install tools (Maestro)"
 run = "./scripts/setup-project.sh"
@@ -29,7 +36,7 @@ run = "./gradlew testDebugUnitTest"
 
 [tasks.test-e2e]
 description = "Run end-to-end tests using Maestro"
-run = "./scripts/run-e2e.sh"
+run = "./scripts/run-e2e.sh $@"
 
 [tasks."test-manual"]
 description = "Launch emulator into a specific snapshot (default: populated_state) with the latest app installed"

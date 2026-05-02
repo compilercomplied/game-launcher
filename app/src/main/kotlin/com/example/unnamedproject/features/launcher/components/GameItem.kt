@@ -25,6 +25,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 
+import androidx.compose.foundation.selection.selectable
+
 @Composable
 fun GameItem(
     game: Game,
@@ -50,6 +52,11 @@ fun GameItem(
         modifier = modifier
             .width(IntrinsicSize.Min)
             .scale(scale)
+            .selectable(
+                selected = isSelected,
+                onClick = {},
+                enabled = true
+            )
             .testTag("game_item")
     ) {
         val shape = MaterialTheme.shapes.extraLarge

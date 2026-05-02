@@ -32,8 +32,13 @@ android emulator start "$AVD_NAME"
 log_success "Emulator ready."
 
 # 3. Running E2E Flows
-for flow in e2e/*.yaml; do
-    [ -e "$flow" ] || continue
+FLOWS=("$@")
+if [ ${#FLOWS[@]} -eq 0 ]; then
+    FLOWS=(e2e/*.yaml)
+fi
+
+for flow in "${FLOWS[@]}"; do
+    [ -e "$flow" ] || { log_error "Flow file not found: $flow"; continue; }
     flow_name=$(basename "$flow")
     
     # Determine snapshot based on name

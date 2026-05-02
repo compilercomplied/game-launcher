@@ -18,6 +18,7 @@ Always add new tests or adapt the existing tests to the new changes.
 3. **Snapshot Awareness:** Be aware that `test-e2e` uses snapshots to isolate different testing scenarios.
 4. **Environment Consistency:** Scripts are designed to be idempotent. If the environment seems broken, `mise run project-setup` is the recommended recovery path.
 5. **Easy bootstrap**: Any change to the expected environment on the host machine should be added to the project-setup script.
+6. **Validation of your work**: **Always** run e2e and unit tests.
 
 ## Planning and product refinement workflow
 

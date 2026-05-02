@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Unnamed Project</string>
+    <string name="menu_content_description">Open navigation menu</string>
+    <string name="settings">Settings</string>
 </resources>
