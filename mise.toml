@@ -35,7 +35,7 @@ description = "Run JVM-based tests"
 run = "./gradlew testDebugUnitTest"
 
 [tasks.test-e2e]
-description = "Run end-to-end tests using Maestro"
+description = "Run end-to-end tests using Maestro. Supports full paths, or just filenames (e.g. 'mise run test-e2e empty_launcher_flow')"
 run = "./scripts/run-e2e.sh $@"
 
 [tasks."test-manual"]

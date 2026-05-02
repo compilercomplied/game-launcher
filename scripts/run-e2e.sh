@@ -17,6 +17,31 @@ trap cleanup EXIT
 
 log_banner "Running End-to-End Tests (Maestro)"
 
+# 0. Resolve and Validate Flows
+FLOWS_ARGS=("$@")
+if [ ${#FLOWS_ARGS[@]} -eq 0 ]; then
+    RESOLVED_FLOWS=(e2e/*.yaml)
+else
+    RESOLVED_FLOWS=()
+    for arg in "${FLOWS_ARGS[@]}"; do
+        flow="$arg"
+        if [ ! -e "$flow" ]; then
+            if [ -e "e2e/$arg" ]; then
+                flow="e2e/$arg"
+            elif [ -e "e2e/$arg.yaml" ]; then
+                flow="e2e/$arg.yaml"
+            fi
+        fi
+
+        if [ -e "$flow" ]; then
+            RESOLVED_FLOWS+=("$flow")
+        else
+            log_error "Flow file not found: $arg"
+            exit 1
+        fi
+    done
+fi
+
 # 1. Build Application
 log_step "Building Application..."
 ./gradlew assembleDebug
@@ -32,13 +57,7 @@ android emulator start "$AVD_NAME"
 log_success "Emulator ready."
 
 # 3. Running E2E Flows
-FLOWS=("$@")
-if [ ${#FLOWS[@]} -eq 0 ]; then
-    FLOWS=(e2e/*.yaml)
-fi
-
-for flow in "${FLOWS[@]}"; do
-    [ -e "$flow" ] || { log_error "Flow file not found: $flow"; continue; }
+for flow in "${RESOLVED_FLOWS[@]}"; do
     flow_name=$(basename "$flow")
     
     # Determine snapshot based on name
