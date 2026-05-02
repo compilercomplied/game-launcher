@@ -1,7 +1,7 @@
 appId: com.example.unnamedproject
 ---
 - launchApp
-- assertVisible: "Unnamed Project"
+- assertVisible: "Open navigation menu"
 
 # Check that the first item is selected by default
 - assertVisible:

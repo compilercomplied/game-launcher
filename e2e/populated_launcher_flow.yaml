@@ -2,7 +2,7 @@ appId: com.example.unnamedproject
 ---
 - launchApp
 
-- assertVisible: "Unnamed Project" 
+- assertVisible: "Open navigation menu" 
 
 - assertVisible: "SuperTuxKart"
 - assertVisible: "Unciv"

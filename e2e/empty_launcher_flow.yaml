@@ -1,7 +1,7 @@
 appId: com.example.unnamedproject
 ---
 - launchApp
-- assertVisible: "Unnamed Project" 
+- assertVisible: "Open navigation menu" 
 
 # We use a regex to ensure no encoded game_item tags exist.
 - assertNotVisible:

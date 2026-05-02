@@ -129,6 +129,11 @@ fun DynamicGameBackground(selectedGame: Game?, modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+fun Modifier.glossyBackground(): Modifier = this.then(
+    Modifier.background(Color.White.copy(alpha = 0.08f))
+)
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun LauncherContent(
@@ -185,21 +190,31 @@ fun LauncherContent(
             Scaffold(
                 containerColor = Color.Transparent,
                 topBar = {
-                    TopAppBar(
-                        title = { Text(stringResource(id = R.string.app_name)) },
-                        navigationIcon = {
-                            IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                                Icon(
-                                    imageVector = Icons.Default.Menu,
-                                    contentDescription = stringResource(R.string.menu_content_description)
-                                )
-                            }
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color.Transparent,
-                            titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .statusBarsPadding()
+                            .height(48.dp)
+                    ) {
+                        // Background layer with subtle white tint
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .glossyBackground()
                         )
-                    )
+                        
+                        // Content layer (Icon remains sharp)
+                        IconButton(
+                            onClick = { scope.launch { drawerState.open() } },
+                            modifier = Modifier.align(Alignment.CenterStart)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = stringResource(R.string.menu_content_description),
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
                 }
             ) { paddingValues ->
                 BoxWithConstraints(
