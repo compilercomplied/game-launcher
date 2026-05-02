@@ -3,16 +3,18 @@ appId: com.example.unnamedproject
 - launchApp
 - assertVisible: "Unnamed Project"
 
+# Check that the first item is selected by default
 - assertVisible:
-    id: "game_item"
-    index: 0
-    selected: true
+    id: "game_item__index_0__selected_true.*"
 
 - swipe:
     start: 50%, 80%
     end: 50%, 20%
 
+# Check that the second item is now selected
 - assertVisible:
-    id: "game_item"
-    index: 1
-    selected: true
+    id: "game_item__index_1__selected_true.*"
+
+# Check that the second item is NOT selected
+- assertVisible:
+    id: "game_item__index_0__selected_false.*"

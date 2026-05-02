@@ -27,9 +27,12 @@ import androidx.compose.ui.graphics.Color
 
 import androidx.compose.foundation.selection.selectable
 
+import com.example.unnamedproject.core.e2eTag
+
 @Composable
 fun GameItem(
     game: Game,
+    index: Int,
     isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
@@ -52,12 +55,17 @@ fun GameItem(
         modifier = modifier
             .width(IntrinsicSize.Min)
             .scale(scale)
+            .e2eTag(
+                id = "game_item",
+                "index" to index,
+                "selected" to isSelected,
+                "loaded" to (coverBitmap != null)
+            )
             .selectable(
                 selected = isSelected,
                 onClick = {},
                 enabled = true
             )
-            .testTag("game_item")
     ) {
         val shape = MaterialTheme.shapes.extraLarge
         Box(

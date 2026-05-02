@@ -3,6 +3,6 @@ appId: com.example.unnamedproject
 - launchApp
 - assertVisible: "Unnamed Project" 
 
-# No games should be rendered at all
+# We use a regex to ensure no encoded game_item tags exist.
 - assertNotVisible:
-    id: "game_item"
+    id: "game_item__index_.*"

@@ -7,19 +7,18 @@ appId: com.example.unnamedproject
 - assertVisible: "SuperTuxKart"
 - assertVisible: "Unciv"
 
+# Verify first item exists and wait for its cover to load
 - assertVisible:
-    id: "game_item"
-    index: 0
+    id: "game_item__index_0.*"
 - extendedWaitUntil:
     visible:
-        id: "game_cover_downloaded"
-        index: 0
+        id: "game_item__index_0.*__loaded_true"
     timeout: 15000
+
+# Verify second item exists and wait for its cover to load
 - assertVisible:
-    id: "game_item"
-    index: 1
+    id: "game_item__index_1.*"
 - extendedWaitUntil:
     visible:
-        id: "game_cover_downloaded"
-        index: 1
+        id: "game_item__index_1.*__loaded_true"
     timeout: 15000

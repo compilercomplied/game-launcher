@@ -223,6 +223,7 @@ fun LauncherContent(
                             items(games.size) { index ->
                                 GameItem(
                                     game = games[index],
+                                    index = index,
                                     isSelected = index == selectedIndex
                                 )
                             }
@@ -241,6 +242,7 @@ fun LauncherContent(
                             items(games.size) { index ->
                                 GameItem(
                                     game = games[index],
+                                    index = index,
                                     isSelected = index == selectedIndex
                                 )
                             }
