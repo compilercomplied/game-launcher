@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.selection.selectable
 
 import com.example.unnamedproject.core.e2eTag
+import com.example.unnamedproject.core.theme.LocalAppDimensions
 
 @Composable
 fun GameItem(
@@ -46,8 +47,10 @@ fun GameItem(
         }
     }
 
+    val dimensions = LocalAppDimensions.current
+
     val scale by animateFloatAsState(
-        targetValue = if (isSelected) 1.1f else 1.0f,
+        targetValue = if (isSelected) dimensions.gameCoverSelectedScale else 1.0f,
         label = "selection_scale"
     )
 
@@ -71,7 +74,8 @@ fun GameItem(
         val shape = MaterialTheme.shapes.extraLarge
         Box(
             modifier = Modifier
-                .size(100.dp)
+                .width(dimensions.gameCoverWidth)
+                .height(dimensions.gameCoverHeight)
                 .then(
                     if (isSelected) {
                         Modifier.border(

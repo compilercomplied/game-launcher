@@ -36,6 +36,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.unnamedproject.R
+import com.example.unnamedproject.core.theme.LocalAppDimensions
 import com.example.unnamedproject.features.launcher.components.GameItem
 import com.example.unnamedproject.models.Game
 import java.io.File
@@ -253,9 +254,10 @@ fun LauncherMainContent(
                     .padding(paddingValues)
             ) {
                 val snapFlingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
+                val dimensions = LocalAppDimensions.current
 
                 if (isLandscape) {
-                    val itemWidth = 100.dp
+                    val itemWidth = dimensions.gameCoverWidth
                     val horizontalPadding = maxWidth / 2 - itemWidth / 2
                     LazyRow(
                         state = listState,
