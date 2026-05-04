@@ -11,8 +11,12 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.unnamedproject.features.launcher.LauncherScreen
 import com.example.unnamedproject.features.launcher.LauncherViewModel
+import com.example.unnamedproject.features.settings.SettingsScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,7 +37,20 @@ class MainActivity : ComponentActivity() {
                         testTagsAsResourceId = true
                     }
                 ) {
-                    LauncherScreen(viewModel = viewModel)
+                    val navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = "launcher") {
+                        composable("launcher") {
+                            LauncherScreen(
+                                viewModel = viewModel,
+                                onNavigateToSettings = { navController.navigate("settings") }
+                            )
+                        }
+                        composable("settings") {
+                            SettingsScreen(
+                                onNavigateBack = { navController.popBackStack() }
+                            )
+                        }
+                    }
                 }
             }
         }

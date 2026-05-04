@@ -2,7 +2,7 @@ package com.example.unnamedproject
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
-import com.example.unnamedproject.features.launcher.LauncherContent
+import com.example.unnamedproject.features.launcher.LauncherMainContent
 import com.example.unnamedproject.mocks.MockedGameRepository
 import com.github.takahirom.roborazzi.captureRoboImage
 import kotlinx.coroutines.runBlocking
@@ -26,10 +26,11 @@ class LauncherBackgroundScreenshotTest {
     fun captureLauncherBackgroundFirstItem() = runBlocking {
         val games = repository.getInstalledGames()
         composeTestRule.setContent {
-            LauncherContent(
+            LauncherMainContent(
                 games = games,
                 selectedIndex = 0,
-                onGameSelected = {}
+                onGameSelected = {},
+                onOpenDrawer = {}
             )
         }
         composeTestRule.onRoot().captureRoboImage()
@@ -40,10 +41,11 @@ class LauncherBackgroundScreenshotTest {
     fun captureLauncherBackgroundSecondItem() = runBlocking {
         val games = repository.getInstalledGames()
         composeTestRule.setContent {
-            LauncherContent(
+            LauncherMainContent(
                 games = games,
                 selectedIndex = 1,
-                onGameSelected = {}
+                onGameSelected = {},
+                onOpenDrawer = {}
             )
         }
         composeTestRule.onRoot().captureRoboImage()
@@ -54,10 +56,11 @@ class LauncherBackgroundScreenshotTest {
     fun captureLauncherBackgroundNoBlur() = runBlocking {
         val games = repository.getInstalledGames()
         composeTestRule.setContent {
-            LauncherContent(
+            LauncherMainContent(
                 games = games,
                 selectedIndex = 2,
-                onGameSelected = {}
+                onGameSelected = {},
+                onOpenDrawer = {}
             )
         }
         composeTestRule.onRoot().captureRoboImage()

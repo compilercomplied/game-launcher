@@ -2,7 +2,7 @@ package com.example.unnamedproject
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
-import com.example.unnamedproject.features.launcher.LauncherContent
+import com.example.unnamedproject.features.launcher.LauncherMainContent
 import com.example.unnamedproject.mocks.MockedGameRepository
 import com.github.takahirom.roborazzi.captureRoboImage
 import kotlinx.coroutines.runBlocking
@@ -26,10 +26,11 @@ class LauncherSelectionScreenshotTest {
     fun captureLauncherSelectionPortrait() = runBlocking {
         val games = repository.getInstalledGames()
         composeTestRule.setContent {
-            LauncherContent(
+            LauncherMainContent(
                 games = games,
                 selectedIndex = 0,
-                onGameSelected = {}
+                onGameSelected = {},
+                onOpenDrawer = {}
             )
         }
         // Advance clock to ensure selection animations (scale) and background transitions are complete
@@ -42,10 +43,11 @@ class LauncherSelectionScreenshotTest {
     fun captureLauncherSecondItemSelected() = runBlocking {
         val games = repository.getInstalledGames()
         composeTestRule.setContent {
-            LauncherContent(
+            LauncherMainContent(
                 games = games,
                 selectedIndex = 1,
-                onGameSelected = {}
+                onGameSelected = {},
+                onOpenDrawer = {}
             )
         }
         // Advance clock to ensure selection animations (scale) and background transitions are complete

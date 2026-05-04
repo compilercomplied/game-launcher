@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
@@ -42,12 +43,16 @@ import kotlin.math.abs
 import kotlinx.coroutines.launch
 
 @Composable
-fun LauncherScreen(viewModel: LauncherViewModel) {
+fun LauncherScreen(
+    viewModel: LauncherViewModel,
+    onNavigateToSettings: () -> Unit = {}
+) {
     val uiState by viewModel.uiState.collectAsState()
     LauncherContent(
         games = uiState.games,
         selectedIndex = uiState.selectedIndex,
-        onGameSelected = { viewModel.onGameSelected(it) }
+        onGameSelected = { viewModel.onGameSelected(it) },
+        onNavigateToSettings = onNavigateToSettings
     )
 }
 
@@ -139,14 +144,52 @@ fun Modifier.glossyBackground(): Modifier = this.then(
 fun LauncherContent(
     games: List<Game>,
     selectedIndex: Int,
-    onGameSelected: (Int) -> Unit
+    onGameSelected: (Int) -> Unit,
+    onNavigateToSettings: () -> Unit = {}
+) {
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet {
+                Spacer(modifier = Modifier.height(16.dp))
+                NavigationDrawerItem(
+                    icon = { Icon(Icons.Default.Settings, contentDescription = null) },
+                    label = { Text(stringResource(R.string.settings)) },
+                    selected = false,
+                    onClick = {
+                        onNavigateToSettings()
+                        scope.launch { drawerState.close() }
+                    },
+                    modifier = Modifier
+                        .padding(NavigationDrawerItemDefaults.ItemPadding)
+                        .testTag("settings_drawer_item")
+                )
+            }
+        }
+    ) {
+        LauncherMainContent(
+            games = games,
+            selectedIndex = selectedIndex,
+            onGameSelected = onGameSelected,
+            onOpenDrawer = { scope.launch { drawerState.open() } }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@Composable
+fun LauncherMainContent(
+    games: List<Game>,
+    selectedIndex: Int,
+    onGameSelected: (Int) -> Unit,
+    onOpenDrawer: () -> Unit
 ) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val listState = rememberLazyListState()
-    
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
 
     // Calculate which item is closest to the center
     val centerIndex by remember {
@@ -165,102 +208,84 @@ fun LauncherContent(
         onGameSelected(centerIndex)
     }
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet {
-                Spacer(modifier = Modifier.height(16.dp))
-                NavigationDrawerItem(
-                    icon = { Icon(Icons.Default.Settings, contentDescription = null) },
-                    label = { Text(stringResource(R.string.settings)) },
-                    selected = false,
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                    },
-                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                )
-            }
-        }
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            DynamicGameBackground(
-                selectedGame = if (games.isNotEmpty() && selectedIndex in games.indices) games[selectedIndex] else null
-            )
+    Box(modifier = Modifier.fillMaxSize()) {
+        DynamicGameBackground(
+            selectedGame = if (games.isNotEmpty() && selectedIndex in games.indices) games[selectedIndex] else null
+        )
 
-            Scaffold(
-                containerColor = Color.Transparent,
-                topBar = {
+        Scaffold(
+            containerColor = Color.Transparent,
+            topBar = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .statusBarsPadding()
+                        .height(48.dp)
+                ) {
+                    // Background layer with subtle white tint
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .statusBarsPadding()
-                            .height(48.dp)
+                            .fillMaxSize()
+                            .glossyBackground()
+                    )
+                    
+                    // Content layer (Icon remains sharp)
+                    IconButton(
+                        onClick = onOpenDrawer,
+                        modifier = Modifier.align(Alignment.CenterStart)
                     ) {
-                        // Background layer with subtle white tint
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .glossyBackground()
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = stringResource(R.string.menu_content_description),
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
-                        
-                        // Content layer (Icon remains sharp)
-                        IconButton(
-                            onClick = { scope.launch { drawerState.open() } },
-                            modifier = Modifier.align(Alignment.CenterStart)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Menu,
-                                contentDescription = stringResource(R.string.menu_content_description),
-                                tint = MaterialTheme.colorScheme.onSurface
+                    }
+                }
+            }
+        ) { paddingValues ->
+            BoxWithConstraints(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                val snapFlingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
+
+                if (isLandscape) {
+                    val itemWidth = 100.dp
+                    val horizontalPadding = maxWidth / 2 - itemWidth / 2
+                    LazyRow(
+                        state = listState,
+                        flingBehavior = snapFlingBehavior,
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(horizontal = horizontalPadding),
+                        horizontalArrangement = Arrangement.spacedBy(32.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        items(games.size) { index ->
+                            GameItem(
+                                game = games[index],
+                                index = index,
+                                isSelected = index == selectedIndex
                             )
                         }
                     }
-                }
-            ) { paddingValues ->
-                BoxWithConstraints(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                ) {
-                    val snapFlingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
-
-                    if (isLandscape) {
-                        val itemWidth = 100.dp
-                        val horizontalPadding = maxWidth / 2 - itemWidth / 2
-                        LazyRow(
-                            state = listState,
-                            flingBehavior = snapFlingBehavior,
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(horizontal = horizontalPadding),
-                            horizontalArrangement = Arrangement.spacedBy(32.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            items(games.size) { index ->
-                                GameItem(
-                                    game = games[index],
-                                    index = index,
-                                    isSelected = index == selectedIndex
-                                )
-                            }
-                        }
-                    } else {
-                        val itemHeight = 150.dp
-                        val verticalPadding = maxHeight / 2 - itemHeight / 2
-                        LazyColumn(
-                            state = listState,
-                            flingBehavior = snapFlingBehavior,
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(vertical = verticalPadding),
-                            verticalArrangement = Arrangement.spacedBy(32.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            items(games.size) { index ->
-                                GameItem(
-                                    game = games[index],
-                                    index = index,
-                                    isSelected = index == selectedIndex
-                                )
-                            }
+                } else {
+                    val itemHeight = 150.dp
+                    val verticalPadding = maxHeight / 2 - itemHeight / 2
+                    LazyColumn(
+                        state = listState,
+                        flingBehavior = snapFlingBehavior,
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(vertical = verticalPadding),
+                        verticalArrangement = Arrangement.spacedBy(32.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        items(games.size) { index ->
+                            GameItem(
+                                game = games[index],
+                                index = index,
+                                isSelected = index == selectedIndex
+                            )
                         }
                     }
                 }

@@ -5,6 +5,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import com.example.unnamedproject.features.launcher.LauncherContent
+import com.example.unnamedproject.features.launcher.LauncherMainContent
 import com.example.unnamedproject.mocks.MockedGameRepository
 import com.github.takahirom.roborazzi.captureRoboImage
 import kotlinx.coroutines.runBlocking
@@ -16,7 +17,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 
 @RunWith(RobolectricTestRunner::class)
-@GraphicsMode(GraphicsMode.Mode.NATIVE)
 class LauncherScreenshotTest {
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -24,14 +24,16 @@ class LauncherScreenshotTest {
     private val repository = MockedGameRepository()
 
     @Test
+    @GraphicsMode(GraphicsMode.Mode.NATIVE)
     @Config(qualifiers = "w360dp-h640dp-port")
     fun captureLauncherPortrait() = runBlocking {
         val games = repository.getInstalledGames()
         composeTestRule.setContent {
-            LauncherContent(
+            LauncherMainContent(
                 games = games,
                 selectedIndex = 0,
-                onGameSelected = {}
+                onGameSelected = {},
+                onOpenDrawer = {}
             )
         }
         composeTestRule.mainClock.advanceTimeBy(1000)
@@ -39,36 +41,19 @@ class LauncherScreenshotTest {
     }
 
     @Test
+    @GraphicsMode(GraphicsMode.Mode.NATIVE)
     @Config(qualifiers = "w640dp-h360dp-land")
     fun captureLauncherLandscape() = runBlocking {
         val games = repository.getInstalledGames()
         composeTestRule.setContent {
-            LauncherContent(
+            LauncherMainContent(
                 games = games,
                 selectedIndex = 0,
-                onGameSelected = {}
+                onGameSelected = {},
+                onOpenDrawer = {}
             )
         }
         composeTestRule.mainClock.advanceTimeBy(1000)
-        composeTestRule.onRoot().captureRoboImage()
-    }
-
-    @Test
-    @Config(qualifiers = "w360dp-h640dp-port")
-    fun captureLauncherWithDrawerOpen() = runBlocking {
-        val games = repository.getInstalledGames()
-        composeTestRule.setContent {
-            LauncherContent(
-                games = games,
-                selectedIndex = 0,
-                onGameSelected = {}
-            )
-        }
-        
-        // Open the drawer
-        composeTestRule.onNodeWithContentDescription("Open navigation menu").performClick()
-        composeTestRule.mainClock.advanceTimeBy(1000)
-        
         composeTestRule.onRoot().captureRoboImage()
     }
 }

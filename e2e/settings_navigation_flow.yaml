@@ -1,0 +1,14 @@
+appId: com.example.unnamedproject
+---
+- launchApp
+- assertVisible: "Open navigation menu"
+- tapOn: "Open navigation menu"
+- assertVisible: "Settings"
+- tapOn: "Settings"
+
+# Wait for settings screen navigation and verify title
+- assertVisible: "Settings"
+- tapOn: "Navigate back"
+
+# Verify we are back on launcher
+- assertVisible: "Open navigation menu"
