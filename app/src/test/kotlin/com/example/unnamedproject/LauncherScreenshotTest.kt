@@ -33,6 +33,7 @@ class LauncherScreenshotTest {
                 games = games,
                 selectedIndex = 0,
                 onGameSelected = {},
+                onGameLaunched = {},
                 onOpenDrawer = {}
             )
         }
@@ -50,6 +51,7 @@ class LauncherScreenshotTest {
                 games = games,
                 selectedIndex = 0,
                 onGameSelected = {},
+                onGameLaunched = {},
                 onOpenDrawer = {}
             )
         }

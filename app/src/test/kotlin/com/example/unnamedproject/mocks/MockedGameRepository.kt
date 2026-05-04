@@ -45,6 +45,13 @@ class MockedGameRepository : GameRepository {
         )
     )
 
+    var lastLaunchedPackage: String? = null
+        private set
+
+    override fun launchGame(packageName: String) {
+        lastLaunchedPackage = packageName
+    }
+
     private fun getMockPath(fileName: String): String {
         return File("src/test/resources/$fileName").absolutePath
     }

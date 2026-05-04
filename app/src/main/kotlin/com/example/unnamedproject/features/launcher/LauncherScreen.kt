@@ -52,6 +52,7 @@ fun LauncherScreen(
         games = uiState.games,
         selectedIndex = uiState.selectedIndex,
         onGameSelected = { viewModel.onGameSelected(it) },
+        onGameLaunched = { viewModel.launchGame(it) },
         onNavigateToSettings = onNavigateToSettings
     )
 }
@@ -145,6 +146,7 @@ fun LauncherContent(
     games: List<Game>,
     selectedIndex: Int,
     onGameSelected: (Int) -> Unit,
+    onGameLaunched: (Game) -> Unit,
     onNavigateToSettings: () -> Unit = {}
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -174,6 +176,7 @@ fun LauncherContent(
             games = games,
             selectedIndex = selectedIndex,
             onGameSelected = onGameSelected,
+            onGameLaunched = onGameLaunched,
             onOpenDrawer = { scope.launch { drawerState.open() } }
         )
     }
@@ -185,6 +188,7 @@ fun LauncherMainContent(
     games: List<Game>,
     selectedIndex: Int,
     onGameSelected: (Int) -> Unit,
+    onGameLaunched: (Game) -> Unit,
     onOpenDrawer: () -> Unit
 ) {
     val configuration = LocalConfiguration.current
@@ -265,7 +269,8 @@ fun LauncherMainContent(
                             GameItem(
                                 game = games[index],
                                 index = index,
-                                isSelected = index == selectedIndex
+                                isSelected = index == selectedIndex,
+                                onClick = { onGameLaunched(games[index]) }
                             )
                         }
                     }
@@ -284,7 +289,8 @@ fun LauncherMainContent(
                             GameItem(
                                 game = games[index],
                                 index = index,
-                                isSelected = index == selectedIndex
+                                isSelected = index == selectedIndex,
+                                onClick = { onGameLaunched(games[index]) }
                             )
                         }
                     }

@@ -38,6 +38,15 @@ class AndroidGameRepository(
             .sortedBy { it.name }
     }
 
+    override fun launchGame(packageName: String) {
+        val pm = context.packageManager
+        val intent = pm.getLaunchIntentForPackage(packageName)
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(intent)
+        }
+    }
+
     private fun shouldIncludeApp(resolveInfo: ResolveInfo): Boolean {
         val appInfo = resolveInfo.activityInfo.applicationInfo
         val packageName = appInfo.packageName

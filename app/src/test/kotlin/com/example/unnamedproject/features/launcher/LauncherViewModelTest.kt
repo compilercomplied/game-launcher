@@ -57,4 +57,18 @@ class LauncherViewModelTest {
 
         assertEquals(2, viewModel.uiState.value.selectedIndex)
     }
+
+    @Test
+    fun `launchGame calls repository`() = runTest {
+        coEvery { repository.getInstalledGames() } returns emptyList()
+        val viewModel = LauncherViewModel(repository, workManager)
+        val game = mockk<Game> {
+            every { packageName } returns "com.example.game"
+        }
+        every { repository.launchGame(any()) } returns Unit
+
+        viewModel.launchGame(game)
+
+        io.mockk.verify { repository.launchGame("com.example.game") }
+    }
 }

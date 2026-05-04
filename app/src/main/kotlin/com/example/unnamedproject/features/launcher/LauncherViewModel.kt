@@ -46,6 +46,10 @@ class LauncherViewModel @Inject constructor(
         _uiState.update { it.copy(selectedIndex = index) }
     }
 
+    fun launchGame(game: Game) {
+        repository.launchGame(game.packageName)
+    }
+
     private fun triggerMetadataSync() {
         val syncRequest = OneTimeWorkRequestBuilder<MetadataSyncWorker>().build()
         workManager.enqueue(syncRequest)

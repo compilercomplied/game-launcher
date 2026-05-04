@@ -30,6 +30,7 @@ class LauncherBackgroundScreenshotTest {
                 games = games,
                 selectedIndex = 0,
                 onGameSelected = {},
+                onGameLaunched = {},
                 onOpenDrawer = {}
             )
         }
@@ -45,6 +46,7 @@ class LauncherBackgroundScreenshotTest {
                 games = games,
                 selectedIndex = 1,
                 onGameSelected = {},
+                onGameLaunched = {},
                 onOpenDrawer = {}
             )
         }
@@ -60,6 +62,7 @@ class LauncherBackgroundScreenshotTest {
                 games = games,
                 selectedIndex = 2,
                 onGameSelected = {},
+                onGameLaunched = {},
                 onOpenDrawer = {}
             )
         }

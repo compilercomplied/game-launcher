@@ -29,6 +29,7 @@ class LauncherNavigationTest {
                 games = emptyList(),
                 selectedIndex = 0,
                 onGameSelected = {},
+                onGameLaunched = {},
                 onNavigateToSettings = { navigated = true }
             )
         }

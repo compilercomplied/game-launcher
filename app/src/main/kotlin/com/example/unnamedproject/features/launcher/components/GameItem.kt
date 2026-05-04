@@ -34,6 +34,7 @@ fun GameItem(
     game: Game,
     index: Int,
     isSelected: Boolean = false,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val coverBitmap = remember(game.coverPath) {
@@ -63,7 +64,7 @@ fun GameItem(
             )
             .selectable(
                 selected = isSelected,
-                onClick = {},
+                onClick = onClick,
                 enabled = true
             )
     ) {

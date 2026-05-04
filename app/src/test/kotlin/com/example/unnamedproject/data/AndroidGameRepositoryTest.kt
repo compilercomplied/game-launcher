@@ -75,6 +75,34 @@ class AndroidGameRepositoryTest {
         assertTrue(games.any { it.packageName == "com.example.legacy.game" })
     }
 
+    @Test
+    fun `launchGame should start activity with launch intent`() {
+        // Arrange
+        val packageName = "com.example.game"
+        val label = "Game Label"
+        val componentName = "com.example.game.MainActivity"
+        
+        val intentToResolve = Intent(Intent.ACTION_MAIN).apply {
+            addCategory(Intent.CATEGORY_LAUNCHER)
+            setPackage(packageName)
+        }
+        
+        val resolveInfo = createResolveInfo(packageName, label).apply {
+            activityInfo.name = componentName
+        }
+        
+        packageManager.addResolveInfoForIntent(intentToResolve, resolveInfo)
+
+        // Act
+        repository.launchGame(packageName)
+
+        // Assert
+        val nextStartedActivity = Shadows.shadowOf(context as android.app.Application).nextStartedActivity
+        assertEquals(packageName, nextStartedActivity.getPackage())
+        assertEquals(Intent.ACTION_MAIN, nextStartedActivity.action)
+        assertTrue((nextStartedActivity.flags and Intent.FLAG_ACTIVITY_NEW_TASK) != 0)
+    }
+
     private fun createResolveInfo(packageName: String, label: String): ResolveInfo {
         val applicationInfo = ApplicationInfo().apply {
             this.packageName = packageName
