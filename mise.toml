@@ -32,7 +32,7 @@ run = "./gradlew verifyRoborazziDebug"
 
 [tasks.test-unit]
 description = "Run JVM-based tests"
-run = "./gradlew testDebugUnitTest"
+run = "./gradlew testDebugUnitTest -q --console=plain --rerun-tasks"
 
 [tasks.test-e2e]
 description = "Run end-to-end tests using Maestro. Supports full paths, or just filenames (e.g. 'mise run test-e2e empty_launcher_flow')"
@@ -42,3 +42,7 @@ run = "./scripts/run-e2e.sh $@"
 description = "Launch emulator into a specific snapshot (default: populated_state) with the latest app installed"
 depends = ["build"]
 run = "./scripts/test-manual.sh"
+
+[tasks."test-all"]
+description = "Run all automated tests"
+depends = ["test-unit", "test-e2e"]
