@@ -26,11 +26,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 
-import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.indication
+import androidx.compose.material3.ripple
+import androidx.compose.ui.input.pointer.pointerInput
+import kotlinx.coroutines.CancellationException
+
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.onClick
 
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -65,6 +74,7 @@ fun GameItem(
     )
 
     val haptic = LocalHapticFeedback.current
+    val interactionSource = remember { MutableInteractionSource() }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -78,20 +88,40 @@ fun GameItem(
                 .width(dimensions.gameCoverWidth)
                 .height(dimensions.gameCoverHeight)
                 .clip(shape)
-                .combinedClickable(
-                    onClick = onClick,
-                    onLongClick = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        onLongClick()
-                    }
-                )
+                .indication(interactionSource, ripple())
+                .pointerInput(interactionSource) {
+                    detectTapGestures(
+                        onPress = { offset ->
+                            val press = PressInteraction.Press(offset)
+                            interactionSource.emit(press)
+                            try {
+                                awaitRelease()
+                                interactionSource.emit(PressInteraction.Release(press))
+                            } catch (c: CancellationException) {
+                                interactionSource.emit(PressInteraction.Cancel(press))
+                            }
+                        },
+                        onTap = { onClick() },
+                        onLongPress = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            onLongClick()
+                        }
+                    )
+                }
                 .e2eTag(
                     id = "game_item",
                     "index" to index,
                     "selected" to isSelected,
                     "loaded" to (coverBitmap != null)
                 )
-                .semantics { selected = isSelected }
+                .semantics { 
+                    selected = isSelected 
+                    role = Role.Button
+                    onClick { 
+                        onClick()
+                        true
+                    }
+                }
                 .then(
                     if (isSelected) {
                         Modifier.border(

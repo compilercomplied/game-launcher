@@ -53,7 +53,6 @@ fun LauncherScreen(
     val uiState by viewModel.uiState.collectAsState()
     LauncherContent(
         games = uiState.games,
-        selectedIndex = uiState.selectedIndex,
         onGameSelected = { viewModel.onGameSelected(it) },
         onGameLaunched = { viewModel.launchGame(it) },
         onGameLongPressed = { viewModel.onGameLongPressed(it) },
@@ -168,7 +167,6 @@ fun Modifier.glossyBackground(): Modifier = this.then(
 @Composable
 fun LauncherContent(
     games: List<Game>,
-    selectedIndex: Int,
     onGameSelected: (Int) -> Unit,
     onGameLaunched: (Game) -> Unit,
     onGameLongPressed: (Game) -> Unit = {},
@@ -212,7 +210,6 @@ fun LauncherContent(
     ) {
         LauncherMainContent(
             games = games,
-            selectedIndex = selectedIndex,
             onGameSelected = onGameSelected,
             onGameLaunched = onGameLaunched,
             onGameLongPressed = onGameLongPressed,
@@ -225,7 +222,6 @@ fun LauncherContent(
 @Composable
 fun LauncherMainContent(
     games: List<Game>,
-    selectedIndex: Int,
     onGameSelected: (Int) -> Unit,
     onGameLaunched: (Game) -> Unit,
     onGameLongPressed: (Game) -> Unit = {},
@@ -254,7 +250,7 @@ fun LauncherMainContent(
 
     Box(modifier = Modifier.fillMaxSize()) {
         DynamicGameBackground(
-            selectedGame = if (games.isNotEmpty() && selectedIndex in games.indices) games[selectedIndex] else null
+            selectedGame = if (games.isNotEmpty() && centerIndex in games.indices) games[centerIndex] else null
         )
 
         Scaffold(
@@ -311,9 +307,9 @@ fun LauncherMainContent(
                             GameItem(
                                 game = games[index],
                                 index = index,
-                                isSelected = index == selectedIndex,
+                                isSelected = index == centerIndex,
                                 onClick = {
-                                    if (index == selectedIndex) {
+                                    if (index == centerIndex) {
                                         onGameLaunched(games[index])
                                     } else {
                                         coroutineScope.launch {
@@ -340,9 +336,9 @@ fun LauncherMainContent(
                             GameItem(
                                 game = games[index],
                                 index = index,
-                                isSelected = index == selectedIndex,
+                                isSelected = index == centerIndex,
                                 onClick = {
-                                    if (index == selectedIndex) {
+                                    if (index == centerIndex) {
                                         onGameLaunched(games[index])
                                     } else {
                                         coroutineScope.launch {

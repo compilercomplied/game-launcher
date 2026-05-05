@@ -27,7 +27,6 @@ class LauncherNavigationTest {
         composeTestRule.setContent {
             LauncherContent(
                 games = emptyList(),
-                selectedIndex = 0,
                 onGameSelected = {},
                 onGameLaunched = {},
                 onNavigateToSettings = { navigated = true }
@@ -57,7 +56,6 @@ class LauncherNavigationTest {
         composeTestRule.setContent {
             LauncherContent(
                 games = emptyList(),
-                selectedIndex = 0,
                 onGameSelected = {},
                 onGameLaunched = {},
                 onNavigateToHiddenGames = { navigated = true }

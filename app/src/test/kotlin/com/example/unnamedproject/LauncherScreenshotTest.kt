@@ -31,7 +31,6 @@ class LauncherScreenshotTest {
         composeTestRule.setContent {
             LauncherMainContent(
                 games = games,
-                selectedIndex = 0,
                 onGameSelected = {},
                 onGameLaunched = {},
                 onOpenDrawer = {}
@@ -49,7 +48,6 @@ class LauncherScreenshotTest {
         composeTestRule.setContent {
             LauncherMainContent(
                 games = games,
-                selectedIndex = 0,
                 onGameSelected = {},
                 onGameLaunched = {},
                 onOpenDrawer = {}
