@@ -19,14 +19,24 @@ import com.example.unnamedproject.features.launcher.LauncherViewModel
 import com.example.unnamedproject.features.settings.SettingsScreen
 import dagger.hilt.android.AndroidEntryPoint
 
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import com.example.unnamedproject.contracts.host.ThemeSettingsRepository
+import javax.inject.Inject
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var themeSettingsRepository: ThemeSettingsRepository
+
     @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            AppTheme {
+            val themeSettings by themeSettingsRepository.settings.collectAsState(initial = null)
+
+            AppTheme(themeSettings = themeSettings) {
                 val viewModel: LauncherViewModel = hiltViewModel()
                 
                 // We wrap the screen in a Surface with testTagsAsResourceId enabled.

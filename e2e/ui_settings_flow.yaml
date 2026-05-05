@@ -1,0 +1,16 @@
+appId: com.example.unnamedproject
+---
+- launchApp
+- tapOn: "Open navigation menu"
+- tapOn: "Settings"
+- assertVisible: "Settings"
+- tapOn: "UI settings"
+- assertVisible: "UI Settings"
+- assertVisible: "game cover"
+- assertVisible: "Corner Radius"
+- assertVisible: "Cover Width"
+- assertVisible: "Selected Scale"
+- tapOn: "Navigate back"
+- assertVisible: "Settings"
+- tapOn: "Navigate back"
+- assertVisible: "Open navigation menu"

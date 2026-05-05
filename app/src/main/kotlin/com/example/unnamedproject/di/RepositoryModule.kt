@@ -2,7 +2,9 @@ package com.example.unnamedproject.di
 
 import android.content.Context
 import com.example.unnamedproject.contracts.host.GameRepository
+import com.example.unnamedproject.contracts.host.ThemeSettingsRepository
 import com.example.unnamedproject.data.AndroidGameRepository
+import com.example.unnamedproject.data.ThemeSettingsRepositoryImpl
 import com.example.unnamedproject.data.local.GameMetadataDao
 import dagger.Module
 import dagger.Provides
@@ -22,5 +24,13 @@ object RepositoryModule {
         metadataDao: GameMetadataDao
     ): GameRepository {
         return AndroidGameRepository(context, metadataDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideThemeSettingsRepository(
+        repository: ThemeSettingsRepositoryImpl
+    ): ThemeSettingsRepository {
+        return repository
     }
 }

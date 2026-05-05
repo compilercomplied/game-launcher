@@ -277,7 +277,7 @@ fun LauncherMainContent(
                         }
                     }
                 } else {
-                    val itemHeight = 150.dp
+                    val itemHeight = dimensions.gameCoverHeight
                     val verticalPadding = maxHeight / 2 - itemHeight / 2
                     LazyColumn(
                         state = listState,
