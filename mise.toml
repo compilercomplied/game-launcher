@@ -55,3 +55,6 @@ description = "Install app in physical phone for manual testing"
 depends = ["build"]
 run = "adb -s adb-55291FDCH0040K-kPfxId._adb-tls-connect._tcp install -r app/build/outputs/apk/debug/app-debug.apk"
 
+[tasks."static-analysis"]
+description = "Run android linter"
+run = "./gradlew :app:lintDebug"
