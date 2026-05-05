@@ -57,7 +57,11 @@ fun GameItem(
     onLongClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    val coverBitmap = remember(game.coverPath) {
+    // HACK: We use lastModified() as a remember key to bust the cache when the MetadataSyncWorker
+    // updates the cover file on disk. Without this, Compose wouldn't know to re-read the file
+    // because the coverPath string itself doesn't change. 
+    // Note: this involves a tiny bit of blocking I/O on the UI thread during composition.
+    val coverBitmap = remember(game.coverPath, game.coverPath?.let { File(it).lastModified() } ?: 0L) {
         game.coverPath?.let { path ->
             val file = File(path)
             if (file.exists()) {

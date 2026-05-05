@@ -40,3 +40,10 @@ Always add new tests or adapt the existing tests to the new changes.
 ## Planning and product refinement workflow
 
 - **File structure**: Feature specifications will go under `docs/features/`. Product specification will go under `docs/` in a single markdown file.
+
+## Technical Debt & Active Hacks
+- **Filesystem-based Cache Busting (2026-05-05)**: In `GameItem.kt`, we use `File.lastModified()` as a `remember` key.
+    - **Why**: Fixes E2E tests where `loaded_true` wasn't detected because the file path remained the same after metadata sync.
+    - **Note**: This involves minor blocking I/O on the UI thread.
+    - **Maintenance**: **Once this hack is refactored (e.g., by moving to a library like Coil or adding a version field to the Game model), this block MUST be removed from AGENTS.md.**
+
