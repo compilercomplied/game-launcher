@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.unnamedproject.R
 import com.example.unnamedproject.core.theme.LocalAppDimensions
+import com.example.unnamedproject.features.launcher.components.GameActionSheet
 import com.example.unnamedproject.features.launcher.components.GameItem
 import com.example.unnamedproject.models.Game
 import java.io.File
@@ -54,8 +55,28 @@ fun LauncherScreen(
         selectedIndex = uiState.selectedIndex,
         onGameSelected = { viewModel.onGameSelected(it) },
         onGameLaunched = { viewModel.launchGame(it) },
+        onGameLongPressed = { viewModel.onGameLongPressed(it) },
         onNavigateToSettings = onNavigateToSettings
     )
+
+    uiState.longPressedGame?.let { game ->
+        GameActionSheet(
+            game = game,
+            onDismiss = { viewModel.onGameLongPressed(null) },
+            onFavorite = { 
+                viewModel.toggleFavorite(it)
+                viewModel.onGameLongPressed(null)
+            },
+            onHide = { 
+                viewModel.hideGame(it)
+                viewModel.onGameLongPressed(null)
+            },
+            onEditMetadata = { 
+                viewModel.editMetadata(it)
+                viewModel.onGameLongPressed(null)
+            }
+        )
+    }
 }
 
 @Composable
@@ -150,6 +171,7 @@ fun LauncherContent(
     selectedIndex: Int,
     onGameSelected: (Int) -> Unit,
     onGameLaunched: (Game) -> Unit,
+    onGameLongPressed: (Game) -> Unit = {},
     onNavigateToSettings: () -> Unit = {}
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -180,6 +202,7 @@ fun LauncherContent(
             selectedIndex = selectedIndex,
             onGameSelected = onGameSelected,
             onGameLaunched = onGameLaunched,
+            onGameLongPressed = onGameLongPressed,
             onOpenDrawer = { scope.launch { drawerState.open() } }
         )
     }
@@ -192,6 +215,7 @@ fun LauncherMainContent(
     selectedIndex: Int,
     onGameSelected: (Int) -> Unit,
     onGameLaunched: (Game) -> Unit,
+    onGameLongPressed: (Game) -> Unit = {},
     onOpenDrawer: () -> Unit
 ) {
     val configuration = LocalConfiguration.current
@@ -274,7 +298,8 @@ fun LauncherMainContent(
                                 game = games[index],
                                 index = index,
                                 isSelected = index == selectedIndex,
-                                onClick = { onGameLaunched(games[index]) }
+                                onClick = { onGameLaunched(games[index]) },
+                                onLongClick = { onGameLongPressed(games[index]) }
                             )
                         }
                     }
@@ -294,7 +319,8 @@ fun LauncherMainContent(
                                 game = games[index],
                                 index = index,
                                 isSelected = index == selectedIndex,
-                                onClick = { onGameLaunched(games[index]) }
+                                onClick = { onGameLaunched(games[index]) },
+                                onLongClick = { onGameLongPressed(games[index]) }
                             )
                         }
                     }

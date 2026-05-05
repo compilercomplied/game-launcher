@@ -28,16 +28,25 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.selected
+
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 
 import com.example.unnamedproject.core.e2eTag
 import com.example.unnamedproject.core.theme.LocalAppDimensions
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GameItem(
     game: Game,
     index: Int,
     isSelected: Boolean = false,
     onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val coverBitmap = remember(game.coverPath) {
@@ -56,9 +65,18 @@ fun GameItem(
         label = "selection_scale"
     )
 
+    val haptic = LocalHapticFeedback.current
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onLongClick()
+                }
+            )
             .width(IntrinsicSize.Min)
             .scale(scale)
             .e2eTag(
@@ -67,11 +85,7 @@ fun GameItem(
                 "selected" to isSelected,
                 "loaded" to (coverBitmap != null)
             )
-            .selectable(
-                selected = isSelected,
-                onClick = onClick,
-                enabled = true
-            )
+            .semantics { selected = isSelected }
     ) {
         val shape = RoundedCornerShape(dimensions.gameCoverCornerRadius)
         Box(

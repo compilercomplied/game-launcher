@@ -18,7 +18,8 @@ import kotlinx.coroutines.flow.update
 
 data class LauncherUiState(
     val games: List<Game> = emptyList(),
-    val selectedIndex: Int = 0
+    val selectedIndex: Int = 0,
+    val longPressedGame: Game? = null
 )
 
 @HiltViewModel
@@ -44,6 +45,22 @@ class LauncherViewModel @Inject constructor(
 
     fun onGameSelected(index: Int) {
         _uiState.update { it.copy(selectedIndex = index) }
+    }
+
+    fun onGameLongPressed(game: Game?) {
+        _uiState.update { it.copy(longPressedGame = game) }
+    }
+
+    fun toggleFavorite(game: Game) {
+        // Placeholder for toggle favorite
+    }
+
+    fun hideGame(game: Game) {
+        // Placeholder for hide game
+    }
+
+    fun editMetadata(game: Game) {
+        // Placeholder for edit metadata
     }
 
     fun launchGame(game: Game) {
