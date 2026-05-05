@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.unnamedproject.core.theme.AppTheme
+import com.example.unnamedproject.features.hiddengames.HiddenGamesScreen
 import com.example.unnamedproject.features.launcher.LauncherScreen
 import com.example.unnamedproject.features.launcher.LauncherViewModel
 import com.example.unnamedproject.features.settings.SettingsScreen
@@ -52,11 +53,18 @@ class MainActivity : ComponentActivity() {
                         composable("launcher") {
                             LauncherScreen(
                                 viewModel = viewModel,
-                                onNavigateToSettings = { navController.navigate("settings") }
+                                onNavigateToSettings = { navController.navigate("settings") },
+                                onNavigateToHiddenGames = { navController.navigate("hidden_games") }
                             )
                         }
                         composable("settings") {
                             SettingsScreen(
+                                onNavigateBack = { navController.popBackStack() }
+                            )
+                        }
+                        composable("hidden_games") {
+                            HiddenGamesScreen(
+                                viewModel = hiltViewModel(),
                                 onNavigateBack = { navController.popBackStack() }
                             )
                         }

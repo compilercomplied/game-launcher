@@ -39,7 +39,10 @@ class LauncherViewModelTest {
 
     @Test
     fun `initial state has first game selected`() = runTest {
-        val games = listOf(mockk<Game>(), mockk<Game>())
+        val games = listOf(
+            mockk<Game> { every { isHidden } returns false },
+            mockk<Game> { every { isHidden } returns false }
+        )
         coEvery { repository.getInstalledGames() } returns games
 
         val viewModel = LauncherViewModel(repository, workManager)
@@ -59,16 +62,46 @@ class LauncherViewModelTest {
     }
 
     @Test
-    fun `launchGame calls repository`() = runTest {
-        coEvery { repository.getInstalledGames() } returns emptyList()
+    fun `initial state filters out hidden games`() = runTest {
+        val game1 = mockk<Game> { every { isHidden } returns false }
+        val game2 = mockk<Game> { every { isHidden } returns true }
+        coEvery { repository.getInstalledGames() } returns listOf(game1, game2)
+
         val viewModel = LauncherViewModel(repository, workManager)
+
+        assertEquals(1, viewModel.uiState.value.games.size)
+        assertEquals(listOf(game1), viewModel.uiState.value.games)
+    }
+
+    @Test
+    fun `hideGame calls repository and reloads list`() = runTest {
         val game = mockk<Game> {
             every { packageName } returns "com.example.game"
+            every { isHidden } returns false
         }
-        every { repository.launchGame(any()) } returns Unit
+        coEvery { repository.getInstalledGames() } returns listOf(game)
+        coEvery { repository.setGameHiddenStatus("com.example.game", true) } returns Unit
 
-        viewModel.launchGame(game)
+        val viewModel = LauncherViewModel(repository, workManager)
+        
+        // After hiding, the game should be filtered out
+        coEvery { repository.getInstalledGames() } returns emptyList()
 
-        io.mockk.verify { repository.launchGame("com.example.game") }
+        viewModel.hideGame(game)
+
+        io.mockk.coVerify { repository.setGameHiddenStatus("com.example.game", true) }
+        assertEquals(0, viewModel.uiState.value.games.size)
+        assertEquals(null, viewModel.uiState.value.longPressedGame)
+    }
+
+    @Test
+    fun `onGameLongPressed updates state`() = runTest {
+        coEvery { repository.getInstalledGames() } returns emptyList()
+        val viewModel = LauncherViewModel(repository, workManager)
+        val game = mockk<Game>()
+
+        viewModel.onGameLongPressed(game)
+
+        assertEquals(game, viewModel.uiState.value.longPressedGame)
     }
 }

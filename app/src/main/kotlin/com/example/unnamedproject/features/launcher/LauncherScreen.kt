@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -46,7 +47,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun LauncherScreen(
     viewModel: LauncherViewModel,
-    onNavigateToSettings: () -> Unit = {}
+    onNavigateToSettings: () -> Unit = {},
+    onNavigateToHiddenGames: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     LauncherContent(
@@ -55,7 +57,8 @@ fun LauncherScreen(
         onGameSelected = { viewModel.onGameSelected(it) },
         onGameLaunched = { viewModel.launchGame(it) },
         onGameLongPressed = { viewModel.onGameLongPressed(it) },
-        onNavigateToSettings = onNavigateToSettings
+        onNavigateToSettings = onNavigateToSettings,
+        onNavigateToHiddenGames = onNavigateToHiddenGames
     )
 
     uiState.longPressedGame?.let { game ->
@@ -169,7 +172,8 @@ fun LauncherContent(
     onGameSelected: (Int) -> Unit,
     onGameLaunched: (Game) -> Unit,
     onGameLongPressed: (Game) -> Unit = {},
-    onNavigateToSettings: () -> Unit = {}
+    onNavigateToSettings: () -> Unit = {},
+    onNavigateToHiddenGames: () -> Unit = {}
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -190,6 +194,18 @@ fun LauncherContent(
                     modifier = Modifier
                         .padding(NavigationDrawerItemDefaults.ItemPadding)
                         .e2eTag("settings_drawer_item")
+                )
+                NavigationDrawerItem(
+                    icon = { Icon(Icons.Default.VisibilityOff, contentDescription = null) },
+                    label = { Text(stringResource(R.string.hidden_games)) },
+                    selected = false,
+                    onClick = {
+                        onNavigateToHiddenGames()
+                        scope.launch { drawerState.close() }
+                    },
+                    modifier = Modifier
+                        .padding(NavigationDrawerItemDefaults.ItemPadding)
+                        .e2eTag("hidden_games_drawer_item")
                 )
             }
         }

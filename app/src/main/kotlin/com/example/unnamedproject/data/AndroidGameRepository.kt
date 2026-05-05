@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import com.example.unnamedproject.contracts.host.GameRepository
 import com.example.unnamedproject.data.local.GameMetadataDao
+import com.example.unnamedproject.data.local.GameMetadataEntity
 import com.example.unnamedproject.models.Game
 
 class AndroidGameRepository(
@@ -32,7 +33,8 @@ class AndroidGameRepository(
                     packageName = packageName,
                     icon = Icons.Default.PlayArrow,
                     coverPath = metadata?.coverPath,
-                    bannerPath = metadata?.bannerPath
+                    bannerPath = metadata?.bannerPath,
+                    isHidden = metadata?.isHidden ?: false
                 )
             }
             .sortedBy { it.name }
@@ -44,6 +46,23 @@ class AndroidGameRepository(
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
+        }
+    }
+
+    override suspend fun setGameHiddenStatus(packageName: String, isHidden: Boolean) {
+        val existing = metadataDao.getMetadataForPackage(packageName)
+        if (existing != null) {
+            metadataDao.insertMetadata(existing.copy(isHidden = isHidden, lastUpdated = System.currentTimeMillis()))
+        } else {
+            metadataDao.insertMetadata(
+                GameMetadataEntity(
+                    packageName = packageName,
+                    coverPath = null,
+                    bannerPath = null,
+                    lastUpdated = System.currentTimeMillis(),
+                    isHidden = isHidden
+                )
+            )
         }
     }
 

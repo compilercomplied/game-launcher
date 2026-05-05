@@ -28,4 +28,10 @@
 	<string name="action_favorite">Favorite</string>
 	<string name="action_hide">Hide</string>
 	<string name="action_edit_metadata">Edit</string>
+
+    <!-- Hidden Games Screen -->
+    <string name="hidden_games">Hidden Games</string>
+    <string name="no_hidden_games">No hidden games.</string>
+    <string name="action_unhide">Unhide</string>
+    <string name="action_open_play_store">Open in Play Store</string>
 </resources>

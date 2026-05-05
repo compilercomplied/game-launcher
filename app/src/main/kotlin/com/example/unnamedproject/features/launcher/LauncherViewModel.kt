@@ -38,7 +38,7 @@ class LauncherViewModel @Inject constructor(
 
     fun loadGames() {
         viewModelScope.launch {
-            val games = repository.getInstalledGames()
+            val games = repository.getInstalledGames().filter { !it.isHidden }
             _uiState.update { it.copy(games = games) }
         }
     }
@@ -56,7 +56,11 @@ class LauncherViewModel @Inject constructor(
     }
 
     fun hideGame(game: Game) {
-        // Placeholder for hide game
+        viewModelScope.launch {
+            repository.setGameHiddenStatus(game.packageName, true)
+            onGameLongPressed(null) // dismiss the sheet
+            loadGames() // reload list
+        }
     }
 
     fun editMetadata(game: Game) {

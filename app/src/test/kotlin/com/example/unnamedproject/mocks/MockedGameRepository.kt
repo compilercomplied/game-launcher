@@ -52,6 +52,12 @@ class MockedGameRepository : GameRepository {
         lastLaunchedPackage = packageName
     }
 
+    val hiddenStatuses = mutableMapOf<String, Boolean>()
+
+    override suspend fun setGameHiddenStatus(packageName: String, isHidden: Boolean) {
+        hiddenStatuses[packageName] = isHidden
+    }
+
     private fun getMockPath(fileName: String): String {
         return File("src/test/resources/$fileName").absolutePath
     }

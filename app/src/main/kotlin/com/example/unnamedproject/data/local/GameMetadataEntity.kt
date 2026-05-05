@@ -8,5 +8,6 @@ data class GameMetadataEntity(
     @PrimaryKey val packageName: String,
     val coverPath: String?,
     val bannerPath: String?,
-    val lastUpdated: Long
+    val lastUpdated: Long,
+    val isHidden: Boolean = false
 )

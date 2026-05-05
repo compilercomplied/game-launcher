@@ -5,4 +5,5 @@ import com.example.unnamedproject.models.Game
 interface GameRepository {
     suspend fun getInstalledGames(): List<Game>
     fun launchGame(packageName: String)
+    suspend fun setGameHiddenStatus(packageName: String, isHidden: Boolean)
 }

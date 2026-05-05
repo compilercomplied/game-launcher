@@ -50,4 +50,34 @@ class LauncherNavigationTest {
 
         assertTrue(navigated, "onNavigateToSettings callback was not triggered")
     }
+
+    @Test
+    fun clickingHiddenGamesInDrawer_triggersNavigationCallback() {
+        var navigated = false
+        composeTestRule.setContent {
+            LauncherContent(
+                games = emptyList(),
+                selectedIndex = 0,
+                onGameSelected = {},
+                onGameLaunched = {},
+                onNavigateToHiddenGames = { navigated = true }
+            )
+        }
+
+        // Open the drawer
+        composeTestRule.onNodeWithContentDescription("Open navigation menu").performClick()
+        
+        // Advance clock to let drawer animation finish
+        composeTestRule.mainClock.advanceTimeBy(1000)
+        composeTestRule.waitForIdle()
+
+        // Verify "Hidden Games" is displayed and click it
+        composeTestRule.onNodeWithTag("hidden_games_drawer_item").assertIsDisplayed().performClick()
+        
+        // Advance clock to allow click to be processed
+        composeTestRule.mainClock.advanceTimeBy(500)
+        composeTestRule.waitForIdle()
+
+        assertTrue(navigated, "onNavigateToHiddenGames callback was not triggered")
+    }
 }
