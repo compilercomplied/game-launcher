@@ -69,22 +69,8 @@ fun GameItem(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .combinedClickable(
-                onClick = onClick,
-                onLongClick = {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    onLongClick()
-                }
-            )
-            .width(IntrinsicSize.Min)
+            .width(dimensions.gameCoverWidth)
             .scale(scale)
-            .e2eTag(
-                id = "game_item",
-                "index" to index,
-                "selected" to isSelected,
-                "loaded" to (coverBitmap != null)
-            )
-            .semantics { selected = isSelected }
     ) {
         val shape = RoundedCornerShape(dimensions.gameCoverCornerRadius)
         Box(
@@ -92,6 +78,20 @@ fun GameItem(
                 .width(dimensions.gameCoverWidth)
                 .height(dimensions.gameCoverHeight)
                 .clip(shape)
+                .combinedClickable(
+                    onClick = onClick,
+                    onLongClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onLongClick()
+                    }
+                )
+                .e2eTag(
+                    id = "game_item",
+                    "index" to index,
+                    "selected" to isSelected,
+                    "loaded" to (coverBitmap != null)
+                )
+                .semantics { selected = isSelected }
                 .then(
                     if (isSelected) {
                         Modifier.border(

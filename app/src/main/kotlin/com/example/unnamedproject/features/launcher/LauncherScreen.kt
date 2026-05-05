@@ -294,6 +294,7 @@ fun LauncherMainContent(
             ) {
                 val snapFlingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
                 val dimensions = LocalAppDimensions.current
+                val coroutineScope = rememberCoroutineScope()
 
                 if (isLandscape) {
                     val itemWidth = dimensions.gameCoverWidth
@@ -311,7 +312,15 @@ fun LauncherMainContent(
                                 game = games[index],
                                 index = index,
                                 isSelected = index == selectedIndex,
-                                onClick = { onGameLaunched(games[index]) },
+                                onClick = {
+                                    if (index == selectedIndex) {
+                                        onGameLaunched(games[index])
+                                    } else {
+                                        coroutineScope.launch {
+                                            listState.animateScrollToItem(index)
+                                        }
+                                    }
+                                },
                                 onLongClick = { onGameLongPressed(games[index]) }
                             )
                         }
@@ -332,7 +341,15 @@ fun LauncherMainContent(
                                 game = games[index],
                                 index = index,
                                 isSelected = index == selectedIndex,
-                                onClick = { onGameLaunched(games[index]) },
+                                onClick = {
+                                    if (index == selectedIndex) {
+                                        onGameLaunched(games[index])
+                                    } else {
+                                        coroutineScope.launch {
+                                            listState.animateScrollToItem(index)
+                                        }
+                                    }
+                                },
                                 onLongClick = { onGameLongPressed(games[index]) }
                             )
                         }
