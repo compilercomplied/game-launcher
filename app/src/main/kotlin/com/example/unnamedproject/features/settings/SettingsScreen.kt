@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -53,7 +54,7 @@ fun SettingsScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        if (showUiSettings) "UI Settings" 
+                        if (showUiSettings) stringResource(R.string.ui_settings) 
                         else stringResource(R.string.settings)
                     ) 
                 },
@@ -66,7 +67,7 @@ fun SettingsScreen(
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Navigate back"
+                            contentDescription = stringResource(R.string.navigate_back)
                         )
                     }
                 }
@@ -88,7 +89,7 @@ fun SettingsScreen(
                         onClick = { showUiSettings = true },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("UI settings")
+                        Text(stringResource(R.string.ui_settings))
                     }
                 }
             } else {
@@ -114,6 +115,7 @@ fun UiSettingsForm(
     onUpdateUseDynamicColor: (Boolean) -> Unit,
     onUpdateThemeMode: (ThemeMode) -> Unit
 ) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -121,7 +123,7 @@ fun UiSettingsForm(
             .verticalScroll(rememberScrollState())
     ) {
         Text(
-            text = "Appearance",
+            text = stringResource(R.string.appearance),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary
         )
@@ -133,7 +135,7 @@ fun UiSettingsForm(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Dynamic Color", style = MaterialTheme.typography.bodyLarge)
+            Text(text = stringResource(R.string.dynamic_color), style = MaterialTheme.typography.bodyLarge)
             Spacer(modifier = Modifier.weight(1f))
             Switch(
                 checked = settings?.useDynamicColor ?: true,
@@ -143,7 +145,7 @@ fun UiSettingsForm(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(text = "Theme Mode", style = MaterialTheme.typography.bodyLarge)
+        Text(text = stringResource(R.string.theme_mode), style = MaterialTheme.typography.bodyLarge)
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -157,7 +159,12 @@ fun UiSettingsForm(
                         selected = (settings?.themeMode ?: ThemeMode.FOLLOW_SYSTEM) == mode,
                         onClick = { onUpdateThemeMode(mode) }
                     )
-                    Text(text = mode.name.lowercase().replaceFirstChar { it.uppercase() })
+                    val label = when (mode) {
+                        ThemeMode.FOLLOW_SYSTEM -> stringResource(R.string.theme_mode_system)
+                        ThemeMode.LIGHT -> stringResource(R.string.theme_mode_light)
+                        ThemeMode.DARK -> stringResource(R.string.theme_mode_dark)
+                    }
+                    Text(text = label)
                 }
             }
         }
@@ -165,7 +172,7 @@ fun UiSettingsForm(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "game cover",
+            text = stringResource(R.string.game_cover),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary
         )
@@ -175,33 +182,33 @@ fun UiSettingsForm(
 
         // Corner Radius
         SettingSlider(
-            label = "Corner Radius",
+            label = stringResource(R.string.corner_radius),
             value = settings?.cornerRadiusDp ?: 28f,
             range = 0f..64f,
             onValueChange = onUpdateRadius,
-            valueDisplay = { "${it.toInt()} dp" }
+            valueDisplay = { context.getString(R.string.dp_value, it.toInt()) }
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         // Cover Width
         SettingSlider(
-            label = "Cover Width",
+            label = stringResource(R.string.cover_width),
             value = settings?.coverWidthDp ?: 100f,
             range = 50f..300f,
             onValueChange = onUpdateWidth,
-            valueDisplay = { "${it.toInt()} dp" }
+            valueDisplay = { context.getString(R.string.dp_value, it.toInt()) }
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         // Selected Scale
         SettingSlider(
-            label = "Selected Scale",
+            label = stringResource(R.string.selected_scale),
             value = settings?.selectedScale ?: 1.15f,
             range = 1.0f..1.5f,
             onValueChange = onUpdateScale,
-            valueDisplay = { "%.2f x".format(it) }
+            valueDisplay = { context.getString(R.string.scale_value, it) }
         )
     }
 }

@@ -85,7 +85,7 @@ fun DynamicGameBackground(selectedGame: Game?, modifier: Modifier = Modifier) {
             if (bitmap != null) {
                 Image(
                     bitmap = bitmap,
-                    contentDescription = "Background Image",
+                    contentDescription = stringResource(R.string.background_image_description),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxSize()
@@ -97,6 +97,7 @@ fun DynamicGameBackground(selectedGame: Game?, modifier: Modifier = Modifier) {
                         )
                 )
             } else {
+                val fallbackDescription = stringResource(R.string.background_fallback_description)
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -110,12 +111,13 @@ fun DynamicGameBackground(selectedGame: Game?, modifier: Modifier = Modifier) {
                         )
                         .semantics { 
                             testTag = "launcher_background_fallback"
-                            contentDescription = "Background Fallback"
+                            contentDescription = fallbackDescription
                         }
                 )
             }
 
             // Scrim for readability
+            val scrimDescription = stringResource(R.string.background_scrim_description)
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -129,7 +131,7 @@ fun DynamicGameBackground(selectedGame: Game?, modifier: Modifier = Modifier) {
                     )
                     .semantics {
                         testTag = "launcher_background_scrim"
-                        contentDescription = "Background Scrim"
+                        contentDescription = scrimDescription
                     }
             )
         }

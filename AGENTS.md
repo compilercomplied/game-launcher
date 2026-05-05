@@ -26,6 +26,7 @@ Always add new tests or adapt the existing tests to the new changes.
 
 ### Key Principles for Agents
 1. **Prefer Mise:** Always check `mise.toml` before executing a command. If a task exists, use it. Prefer simple tasks and divert to shell scripts the moment it takes more than 5 lines.
+2. **Localization First:** NEVER hardcode user-facing strings in the codebase. All strings must be extracted to `app/src/main/res/values/strings.xml` and referenced using `stringResource(R.string...)` in Compose or `context.getString(R.string...)` elsewhere.
 3. **Snapshot Awareness:** Be aware that `test-e2e` uses snapshots to isolate different testing scenarios.
 4. **Environment Consistency:** Scripts are designed to be idempotent. If the environment seems broken, `mise run project-setup` is the recommended recovery path.
 5. **Easy bootstrap**: Any change to the expected environment on the host machine should be added to the project-setup script.
