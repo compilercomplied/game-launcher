@@ -18,8 +18,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -34,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.unnamedproject.R
+import com.example.unnamedproject.contracts.host.ThemeMode
 import com.example.unnamedproject.contracts.host.ThemeSettings
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,7 +96,9 @@ fun SettingsScreen(
                     settings = settings,
                     onUpdateRadius = viewModel::updateCornerRadius,
                     onUpdateWidth = viewModel::updateCoverWidth,
-                    onUpdateScale = viewModel::updateSelectedScale
+                    onUpdateScale = viewModel::updateSelectedScale,
+                    onUpdateUseDynamicColor = viewModel::updateUseDynamicColor,
+                    onUpdateThemeMode = viewModel::updateThemeMode
                 )
             }
         }
@@ -105,7 +110,9 @@ fun UiSettingsForm(
     settings: ThemeSettings?,
     onUpdateRadius: (Float) -> Unit,
     onUpdateWidth: (Float) -> Unit,
-    onUpdateScale: (Float) -> Unit
+    onUpdateScale: (Float) -> Unit,
+    onUpdateUseDynamicColor: (Boolean) -> Unit,
+    onUpdateThemeMode: (ThemeMode) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -113,6 +120,50 @@ fun UiSettingsForm(
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
+        Text(
+            text = "Appearance",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        HorizontalDivider()
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "Dynamic Color", style = MaterialTheme.typography.bodyLarge)
+            Spacer(modifier = Modifier.weight(1f))
+            Switch(
+                checked = settings?.useDynamicColor ?: true,
+                onCheckedChange = onUpdateUseDynamicColor
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(text = "Theme Mode", style = MaterialTheme.typography.bodyLarge)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            ThemeMode.entries.forEach { mode ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(end = 8.dp)
+                ) {
+                    RadioButton(
+                        selected = (settings?.themeMode ?: ThemeMode.FOLLOW_SYSTEM) == mode,
+                        onClick = { onUpdateThemeMode(mode) }
+                    )
+                    Text(text = mode.name.lowercase().replaceFirstChar { it.uppercase() })
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
         Text(
             text = "game cover",
             style = MaterialTheme.typography.titleMedium,

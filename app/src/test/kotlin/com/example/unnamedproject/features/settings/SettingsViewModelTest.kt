@@ -1,5 +1,6 @@
 package com.example.unnamedproject.features.settings
 
+import com.example.unnamedproject.contracts.host.ThemeMode
 import com.example.unnamedproject.contracts.host.ThemeSettings
 import com.example.unnamedproject.contracts.host.ThemeSettingsRepository
 import io.mockk.coEvery
@@ -53,6 +54,26 @@ class SettingsViewModelTest {
         
         assertEquals(expectedSettings, viewModel.settings.value)
         job.cancel()
+    }
+
+    @Test
+    fun `updateUseDynamicColor calls repository`() = runTest {
+        coEvery { repository.updateUseDynamicColor(any()) } returns Unit
+        val viewModel = SettingsViewModel(repository)
+        
+        viewModel.updateUseDynamicColor(false)
+        
+        coVerify { repository.updateUseDynamicColor(false) }
+    }
+
+    @Test
+    fun `updateThemeMode calls repository`() = runTest {
+        coEvery { repository.updateThemeMode(any()) } returns Unit
+        val viewModel = SettingsViewModel(repository)
+        
+        viewModel.updateThemeMode(ThemeMode.DARK)
+        
+        coVerify { repository.updateThemeMode(ThemeMode.DARK) }
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.example.unnamedproject.features.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.unnamedproject.contracts.host.ThemeMode
 import com.example.unnamedproject.contracts.host.ThemeSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,6 +20,18 @@ class SettingsViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = null
     )
+
+    fun updateUseDynamicColor(useDynamic: Boolean) {
+        viewModelScope.launch {
+            repository.updateUseDynamicColor(useDynamic)
+        }
+    }
+
+    fun updateThemeMode(mode: ThemeMode) {
+        viewModelScope.launch {
+            repository.updateThemeMode(mode)
+        }
+    }
 
     fun updateCornerRadius(radius: Float) {
         viewModelScope.launch {
