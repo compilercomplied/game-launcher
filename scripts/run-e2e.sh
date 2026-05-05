@@ -67,11 +67,29 @@ for flow in "${RESOLVED_FLOWS[@]}"; do
     fi
 
     log_step "Preparing '$snapshot' environment for $flow_name..."
-    adb emu avd snapshot load "$snapshot"
-    sleep 2 # Stabilization
+    if ! adb emu avd snapshot load "$snapshot"; then
+        log_error "Failed to load snapshot: $snapshot"
+        exit 1
+    fi
+    
+    # Wait for ADB connection to stabilize after snapshot load
+    adb wait-for-device
+    # Unlock screen to ensure UI is ready for Maestro
+    adb shell input keyevent 82 2>/dev/null || true
+    
+    # Wait for the system to settle (broadcasts, package manager, etc.)
+    adb shell am wait-for-broadcast-idle
+    
+    until adb shell true 2>/dev/null; do
+        sleep 0.1
+    done
 
     log_info "Installing Application..."
-    adb install -r "$APK_PATH"
+    # -r: replace, -t: allow test APK, -g: grant all permissions
+    adb install -r -t -g "$APK_PATH"
+    
+    # Ensure app is stopped before starting the test
+    adb shell am force-stop com.example.unnamedproject || true
 
     log_banner "Running E2E Flow: $flow_name"
     maestro test "$flow"
