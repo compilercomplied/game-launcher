@@ -15,4 +15,4 @@ appId: com.example.unnamedproject
     id: "game_action_sheet_content"
 - assertVisible: "Favorite"
 - assertVisible: "Hide"
-- assertVisible: "Edit Metadata"
+- assertVisible: "Edit"

@@ -29,13 +29,12 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.unnamedproject.R
+import com.example.unnamedproject.core.e2eTag
 import com.example.unnamedproject.core.theme.LocalAppDimensions
 import com.example.unnamedproject.features.launcher.components.GameActionSheet
 import com.example.unnamedproject.features.launcher.components.GameItem
@@ -84,9 +83,7 @@ fun DynamicGameBackground(selectedGame: Game?, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .semantics {
-                testTag = "launcher_background_container"
-            }
+            .e2eTag("launcher_background_container")
     ) {
         Crossfade(
             targetState = selectedGame,
@@ -110,7 +107,7 @@ fun DynamicGameBackground(selectedGame: Game?, modifier: Modifier = Modifier) {
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxSize()
-                        .testTag("launcher_background_image")
+                        .e2eTag("launcher_background_image")
                         .then(
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                                 Modifier.blur(30.dp)
@@ -130,8 +127,8 @@ fun DynamicGameBackground(selectedGame: Game?, modifier: Modifier = Modifier) {
                                 )
                             )
                         )
+                        .e2eTag("launcher_background_fallback")
                         .semantics { 
-                            testTag = "launcher_background_fallback"
                             contentDescription = fallbackDescription
                         }
                 )
@@ -150,8 +147,8 @@ fun DynamicGameBackground(selectedGame: Game?, modifier: Modifier = Modifier) {
                             1f to Color.Black.copy(alpha = 0.8f)
                         )
                     )
+                    .e2eTag("launcher_background_scrim")
                     .semantics {
-                        testTag = "launcher_background_scrim"
                         contentDescription = scrimDescription
                     }
             )
@@ -192,7 +189,7 @@ fun LauncherContent(
                     },
                     modifier = Modifier
                         .padding(NavigationDrawerItemDefaults.ItemPadding)
-                        .testTag("settings_drawer_item")
+                        .e2eTag("settings_drawer_item")
                 )
             }
         }

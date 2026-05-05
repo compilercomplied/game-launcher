@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.platform.testTag
 import com.example.unnamedproject.models.Game
 import java.io.File
 
@@ -111,7 +110,7 @@ fun GameItem(
                     contentDescription = game.name,
                     modifier = Modifier
                         .fillMaxSize()
-                        .testTag("game_cover_downloaded"),
+                        .e2eTag("game_cover_downloaded"),
                     contentScale = ContentScale.Crop
                 )
             } else {
@@ -120,7 +119,7 @@ fun GameItem(
                     contentDescription = game.name,
                     modifier = Modifier
                         .size(48.dp)
-                        .testTag("game_icon_default"),
+                        .e2eTag("game_icon_default"),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }

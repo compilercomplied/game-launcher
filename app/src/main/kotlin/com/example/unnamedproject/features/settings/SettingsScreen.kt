@@ -39,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.unnamedproject.R
 import com.example.unnamedproject.contracts.host.ThemeMode
 import com.example.unnamedproject.contracts.host.ThemeSettings
+import com.example.unnamedproject.core.e2eTag
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -87,7 +88,9 @@ fun SettingsScreen(
                 ) {
                     Button(
                         onClick = { showUiSettings = true },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .e2eTag("ui_settings_button")
                     ) {
                         Text(stringResource(R.string.ui_settings))
                     }
@@ -139,7 +142,8 @@ fun UiSettingsForm(
             Spacer(modifier = Modifier.weight(1f))
             Switch(
                 checked = settings?.useDynamicColor ?: true,
-                onCheckedChange = onUpdateUseDynamicColor
+                onCheckedChange = onUpdateUseDynamicColor,
+                modifier = Modifier.e2eTag("dynamic_color_switch", "checked" to (settings?.useDynamicColor ?: true))
             )
         }
 
@@ -157,7 +161,8 @@ fun UiSettingsForm(
                 ) {
                     RadioButton(
                         selected = (settings?.themeMode ?: ThemeMode.FOLLOW_SYSTEM) == mode,
-                        onClick = { onUpdateThemeMode(mode) }
+                        onClick = { onUpdateThemeMode(mode) },
+                        modifier = Modifier.e2eTag("theme_mode_${mode.name.lowercase()}")
                     )
                     val label = when (mode) {
                         ThemeMode.FOLLOW_SYSTEM -> stringResource(R.string.theme_mode_system)
@@ -182,6 +187,7 @@ fun UiSettingsForm(
 
         // Corner Radius
         SettingSlider(
+            id = "corner_radius",
             label = stringResource(R.string.corner_radius),
             value = settings?.cornerRadiusDp ?: 28f,
             range = 0f..64f,
@@ -193,6 +199,7 @@ fun UiSettingsForm(
 
         // Cover Width
         SettingSlider(
+            id = "cover_width",
             label = stringResource(R.string.cover_width),
             value = settings?.coverWidthDp ?: 100f,
             range = 50f..300f,
@@ -204,6 +211,7 @@ fun UiSettingsForm(
 
         // Selected Scale
         SettingSlider(
+            id = "selected_scale",
             label = stringResource(R.string.selected_scale),
             value = settings?.selectedScale ?: 1.15f,
             range = 1.0f..1.5f,
@@ -215,6 +223,7 @@ fun UiSettingsForm(
 
 @Composable
 fun SettingSlider(
+    id: String,
     label: String,
     value: Float,
     range: ClosedFloatingPointRange<Float>,
@@ -238,7 +247,9 @@ fun SettingSlider(
             value = value,
             onValueChange = onValueChange,
             valueRange = range,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .e2eTag("${id}_slider", "value" to value)
         )
     }
 }
